@@ -8,10 +8,10 @@ using namespace std;
 
 struct Coordinate
 {
-    int x_left;
-    int x_right;
-    int y_up;
-    int y_down;
+    int _x_left;
+    int _x_right;
+    int _y_up;
+    int _y_down;
 };
 
 // For optimization
@@ -29,9 +29,9 @@ public:
     bool read(istream &);
 
 private:
-    vector<Window> _windows;
-    vector<Block> _blocks;
-    vector<Group> _group;
+    vector<Window*> _windows;
+    vector<Block*>  _blocks;
+    vector<Group*>  _group;
 };
 
 class Block
@@ -42,9 +42,9 @@ public:
     int area();
 
 private:
-    Coordinate blockCoord;
-    vector<Block*> adjBlocks;
-    vector<Window*> windows;
+    Coordinate      _blockCoord;
+    vector<Block*>  _adjBlocks;
+    vector<Window*> _windows;
 };
 
 class Group
@@ -54,10 +54,10 @@ public:
     ~Group();
 
 private:
-    int area;
-    vector<Block*> blocks_A;
-    vector<Block*> blocks_B;
-    vector<Window*> windows;
+    int             _area;
+    vector<Block*>  _blocks_A;
+    vector<Block*>  _blocks_B;
+    vector<Window*> _windows;
 };
 
 class Grid
@@ -67,10 +67,10 @@ public:
     ~Grid();
 
 private:
-    Coordinate gridCoord;
-    vector<blocks*> blocks;
-    static int alpha;
-    static int beta;
+    Coordinate      _gridCoord;
+    vector<blocks*> _blocks;
+    static int      _alpha;
+    static int      _beta;
 };
 
 class Window
@@ -80,10 +80,10 @@ public:
     ~Window();
 
 private:
-    Coordinate windowCoord;
-    vector<Group*> innerGroup;
-    vector<Group*> crossGroup;
-    static int omega;
+    Coordinate      _windowCoord;
+    vector<Group*>  _innerGroup;
+    vector<Group*>  _crossGroup;
+    static int      _omega;
 };
 
 #endif
