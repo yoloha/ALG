@@ -6,6 +6,8 @@
 
 using namespace std;
 
+class Window;
+
 struct Coordinate
 {
     int _x_left;
