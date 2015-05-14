@@ -1,91 +1,105 @@
-#ifndef COLOR_BALANCING_H
+#ifndef  COLOR_BALANCING_H
 #define COLOR_BALANCING_H
 
 #include <vector>
 #include <iostream>
 
+
 using namespace std;
 
 class Window;
+class Block;
+class Group;
+class Grid;
 
 struct Coordinate
 {
-    int _x_left;
-    int _x_right;
-    int _y_up;
-    int _y_down;
+	int x_left;
+	int x_right;
+	int y_up;
+	int y_down;
 };
 
 // For optimization
 struct WindowsSet
 {
-    vector<Window*> 
+	vector<Window*> _disjointWindows;
 };
 
 
 class BoundingBox
 {
 public:
-    BoundingBox();
-    ~BoundingBox();
-    bool read(istream &);
-
+	BoundingBox();
+	~BoundingBox();
+	bool readBlock(istream &);
+	void buildGroup();
+	void printInfo(ostream &);
 private:
-    vector<Window*> _windows;
-    vector<Block*>  _blocks;
-    vector<Group*>  _group;
+	int alpha, beta, omega;
+	vector<Window> _windows;
+	vector<Block> _blocks;
+	vector<Group> _group;
+	Grid** _grid;
+	Coordinate Bbox_coord;
+
+	void addBlockToGrid(Block*);
+	bool checkBlockAdj(Block*,Block*);
+	bool checkConnected(Block*,Block*);
 };
 
 class Block
 {
+friend class BoundingBox;
 public:
-    Block();
-    ~Block();
-    int area();
+	Block();
+	Block(Coordinate);
+	~Block();
 
+	int area();
+	void addAdjBlock(Block*);
+	friend ostream& operator << (ostream&, const Block&);
 private:
-    Coordinate      _blockCoord;
-    vector<Block*>  _adjBlocks;
-    vector<Window*> _windows;
+	Coordinate blockCoord;
+	vector<Block*> adjBlocks;
+	vector<Window*> windows;
 };
 
 class Group
 {
 public:
-    Group();
-    ~Group();
-
+	Group();
+	~Group();
 private:
-    int             _area;
-    vector<Block*>  _blocks_A;
-    vector<Block*>  _blocks_B;
-    vector<Window*> _windows;
+	int area;
+	vector<Block*> blocks_A;
+	vector<Block*> blocks_B;
+	//Note: area(A) > area(B)
+	vector<Window*> windows;
 };
 
 class Grid
 {
+friend class BoundingBox;
 public:
-    Grid();
-    ~Grid();
-
+	Grid();
+	~Grid();
+	void addBlock(Block*);
 private:
-    Coordinate      _gridCoord;
-    vector<blocks*> _blocks;
-    static int      _alpha;
-    static int      _beta;
+	//Coordinate gridCoord;
+	vector<Block*> blocks;
 };
 
 class Window
 {
 public:
-    Window();
-    ~Window();
-
+	Window();
+	~Window();
 private:
-    Coordinate      _windowCoord;
-    vector<Group*>  _innerGroup;
-    vector<Group*>  _crossGroup;
-    static int      _omega;
+	Coordinate windowCoord;
+	vector<Group*> innerGroup;
+	vector<Group*> crossGroup;
+	static int omega;
 };
 
 #endif
