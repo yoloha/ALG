@@ -35,17 +35,20 @@ public:
 	bool readBlock(istream &);
 	void buildGroup();
 	void printInfo(ostream &);
+	void colorBlocks();
 private:
 	int alpha, beta, omega;
 	vector<Window> _windows;
 	vector<Block> _blocks;
-	vector<Group> _group;
+	vector<Group> _Cgroup;
+	vector<Group> _NOgroup;
 	Grid** _grid;
 	Coordinate Bbox_coord;
 
 	void addBlockToGrid(Block*);
 	bool checkBlockAdj(Block*,Block*);
 	bool checkConnected(Block*,Block*);
+	bool DFSvisit(Block*,int);
 };
 
 class Block
@@ -63,6 +66,9 @@ private:
 	Coordinate blockCoord;
 	vector<Block*> adjBlocks;
 	vector<Window*> windows;
+	bool visited;
+	int color;
+	int cc;
 };
 
 class Group
@@ -70,6 +76,10 @@ class Group
 public:
 	Group();
 	~Group();
+
+	void addA(Block*);
+	void addB(Block*);
+	void addwindow(Window*)
 private:
 	int area;
 	vector<Block*> blocks_A;

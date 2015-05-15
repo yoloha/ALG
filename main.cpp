@@ -7,7 +7,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
  	BoundingBox test;
- 	ifstream ifs("../inputs/case1.in");
+ 	ifstream ifs("./case_ex");
  	test.readBlock(ifs);
  	test.buildGroup();
  	test.printInfo(cout);

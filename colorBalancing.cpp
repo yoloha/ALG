@@ -98,6 +98,7 @@ void BoundingBox::buildGroup()
 	for(size_t i = 0; i < _blocks.size(); ++i){
 		addBlockToGrid(&_blocks[i]);
 	}
+	colorBlocks();
 
 	for(size_t i = 0; i < grid_x_size ; ++i){
 		delete [] _grid[i];
@@ -220,16 +221,75 @@ bool BoundingBox::checkConnected(Block* b1,Block* b2)
 void BoundingBox::printInfo(ostream& os)
 {
 	for(size_t i =0; i< _blocks.size(); ++i){
-		os<<_blocks[i];
-		os<<"---------------------"<<endl;
+		os<<"Block:          "<<_blocks[i];
+		os<<"---------------------------------------"<<endl;
 		os<<"Adjacent Block:"<<endl;
 		for(size_t j = 0 ; j < _blocks[i].adjBlocks.size() ; ++j)
-			os<<*_blocks[i].adjBlocks[j];
-		os<<endl;
+			os<<"                "<<*_blocks[i].adjBlocks[j];
+		os<<"\n\n\n";
 	}
 	os<<"ALPHA : "<<alpha<<endl;
 	os<<"BETA : "<<beta<<endl;
 	os<<"Boundary : "<<Block(Bbox_coord);
+}
+
+void BoundingBox::colorBlocks()
+{
+	int k=0;
+	for(size_t i=0; i<_blocks.size();++i){
+	    _blocks[i].visited=false;
+	    _blocks[i].cc=0; //connected component index starts from 0
+	    _blocks[i].color=0;
+	}
+    for(size_t i =0;i<_blocks.size();++i){
+        if(_blocks[i].visited==false){
+        	DFSvisit(&_blocks[i],k);
+        	k=k+1;
+        }
+    }
+    // color
+    vector<bool> colorable;
+    for(int i=0;i<=k;i++){
+    	colorable.push_back(true);
+        for(size_t j=0;j<_blocks.size();++j){
+            if(_blocks[j].cc==i){
+            	bool colorusage[2]={false,false};
+                for(size_t q=0;q<_blocks[j].adjBlocks.size();++q){
+                    if(_blocks[j].adjBlocks[q]->color==1)
+                    	colorusage[0]=true;
+                    else if(_blocks[j].adjBlocks[q]->color==2)
+                    	colorusage[1]=true;
+                }
+                if(colorusage[0]==false)
+                	_blocks[j].color=1;
+                else if(colorusage[1]==false)
+                	_blocks[j].color=2;
+                else{
+                	colorable[i]=false;
+                	break;
+                }
+            }
+        }
+    }
+    // debug info
+    for(int i=0;i<k;i++){
+    	cout<<" CC: "<<i<<endl;
+    	cout<<"colorable ? "<<colorable[i]<<endl;
+        for(size_t j=0;j<_blocks.size();++j){
+            if(_blocks[j].cc==i)
+            	cout<<_blocks[j];
+        }
+        cout<<endl;
+    }
+}
+bool BoundingBox::DFSvisit(Block* b,int k)
+{
+    b->visited=true;
+    b->cc=k;
+    for(size_t i = 0; i<b->adjBlocks.size(); ++i){
+    	if(b->adjBlocks[i]->visited==false)
+    		DFSvisit(b->adjBlocks[i],k);
+    }
 }
 BoundingBox::~BoundingBox() {}
 //}}} BoundingBox
