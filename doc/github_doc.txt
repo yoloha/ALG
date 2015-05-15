@@ -1,0 +1,90 @@
+git clone [url]
+複製現有的儲存庫
+
+git status
+檢視檔案的狀態
+
+git add [檔案名]
+追蹤新檔案
+將已被修改的檔案暫存
+
+git reset HEAD [檔案名]
+取消已被暫存的檔案
+
+git checkout -- [檔案名]
+復原已被更動的檔案
+
+git commit -m "更動簡述"
+提交修改
+
+git log
+檢視提交的歷史紀錄
+
+git remote
+顯示所有的遠端儲存庫的名稱
+
+git remote -v
+顯示所有的遠端儲存庫的名稱以及URL
+
+git remote add [shortname] [url]
+新增遠端儲存庫
+
+git remote show [remote-name]
+監看遠端儲存庫
+
+git push [remote-name] [branch-name]
+上傳到遠端儲存庫(省略:[branch-name] => 本地分支和遠端分支同名)
+
+git push [remote-name] [本地branch-name]:[遠端branch-name]
+上傳本地分支到遠端儲存庫的遠端分支
+
+git fetch [remote-name]
+從遠端擷取資料
+
+git pull
+從遠端擷取資料並合併到現在的branch
+
+git branch [branch-name]
+新建分支
+
+git checkout [branch-name]
+切換分支
+
+git checkout -b [branch-name]
+新建並切換分支
+
+git merge [branch-name]
+把branch-name和現在所在的分支合併
+
+git branch -d [branch-name]
+刪除分支
+
+git branch
+列出分支清單
+
+git branch -v
+查看各個分支最後一個提交物件的資訊
+
+================================================================================================
+
+修改檔案上傳
+
+modified file 
+=> git add [file-name] 
+=> git commit -m "..." 
+=> git push [remote-name] [branch-name]:[branch-name]
+
+
+擷取資料並合併到現在的分支
+
+git fetch [remote-name]
+=> git merge [remote-name]/[branch-name]
+
+git pull [remote-name]
+(和上面兩個指令有相同作用)
+
+
+擷取資料到新建的分支上
+
+git fetch [remote-name]
+=> git checkout -b [本地branch-name] [remote-name]/[branch-name]
