@@ -7,7 +7,7 @@
 #include <vector>
 #include <limits>
 #include <cmath>
-
+#include <algorithm>
 using namespace std;
 Coordinate parseBlock(string);
 
@@ -220,22 +220,33 @@ bool BoundingBox::checkConnected(Block* b1,Block* b2)
 
 void BoundingBox::printInfo(ostream& os)
 {
-	for(size_t i =0; i< _blocks.size(); ++i){
-		os<<"Block:          "<<_blocks[i];
-		os<<"---------------------------------------"<<endl;
-		os<<"Adjacent Block:"<<endl;
-		for(size_t j = 0 ; j < _blocks[i].adjBlocks.size() ; ++j)
-			os<<"                "<<*_blocks[i].adjBlocks[j];
-		os<<"\n\n\n";
-	}
+	os<<"------------------------DEBUG INFO-----------------------"<<endl;
 	os<<"ALPHA : "<<alpha<<endl;
 	os<<"BETA : "<<beta<<endl;
 	os<<"Boundary : "<<Block(Bbox_coord);
+	os<<"---------------------------------------------------------"<<endl;
+	for(size_t i=0;i<_NOgroup.size();i++){
+	    os<<"GROUP"<<endl;
+	    for(size_t j=0;j<_NOgroup[i]._blocksA.size();j++)
+	    	os<<"NO["<<j+1<<"]="<<*_NOgroup[i]._blocksA[j]<<endl;
+	}
+	for(size_t i=0;i<_Cgroup.size();i++){
+	    os<<"GROUP"<<endl;
+	    for(size_t j=0;j<_Cgroup[i]._blocksA.size();j++)
+	    	os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
+	    for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++)
+	    	os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
+	}
 }
 
 void BoundingBox::colorBlocks()
 {
 	int k=0;
+	int xmin=Bbox_coord.x_right;
+	int xmax=Bbox_coord.x_left;
+	int ymin=Bbox_coord.y_up;
+	int ymax=Bbox_coord.y_down;
+	// find CC
 	for(size_t i=0; i<_blocks.size();++i){
 	    _blocks[i].visited=false;
 	    _blocks[i].cc=0; //connected component index starts from 0
@@ -271,16 +282,44 @@ void BoundingBox::colorBlocks()
             }
         }
     }
-    // debug info
+    // add to group & update Bbox_coord
     for(int i=0;i<k;i++){
-    	cout<<" CC: "<<i<<endl;
-    	cout<<"colorable ? "<<colorable[i]<<endl;
-        for(size_t j=0;j<_blocks.size();++j){
-            if(_blocks[j].cc==i)
-            	cout<<_blocks[j];
-        }
-        cout<<endl;
+    	if(colorable[i]==true){
+    		Group* colorGroup = new Group;
+    		for(size_t j=0;j<_blocks.size();++j){
+                if(_blocks[j].cc==i){
+                	if(_blocks[j].color==1)
+                		colorGroup->addA(&_blocks[j]);
+                	else
+                		colorGroup->addB(&_blocks[j]);
+                	if(_blocks[j].blockCoord.x_left < xmin)
+		            	xmin=_blocks[j].blockCoord.x_left;
+		            if(_blocks[j].blockCoord.x_right > xmax)
+		            	xmax=_blocks[j].blockCoord.x_right;
+		            if(_blocks[j].blockCoord.y_down < ymin)
+		            	ymin=_blocks[j].blockCoord.y_down;
+		            if(_blocks[j].blockCoord.y_up > ymax)
+		            	ymax=_blocks[j].blockCoord.y_up;
+                }
+            }
+            if(colorGroup->areaA() < colorGroup->areaB())
+            	colorGroup->swapAB();
+            _Cgroup.push_back(*colorGroup);
+    	}
+    	else{
+    		Group* noGroup = new Group;
+    		for(size_t j=0;j<_blocks.size();++j){
+                if(_blocks[j].cc==i){
+                	noGroup->addA(&_blocks[j]);
+                }
+            }
+            _NOgroup.push_back(*noGroup);
+    	}
     }
+    Bbox_coord.x_left =xmin;
+    Bbox_coord.x_right=xmax;
+    Bbox_coord.y_up   =ymax;
+    Bbox_coord.y_down =ymin;
 }
 bool BoundingBox::DFSvisit(Block* b,int k)
 {
@@ -322,8 +361,31 @@ Block::~Block() {}
 
 // Group{{{
 Group::Group() {}
-
 Group::~Group() {}
+void Group::addA(Block* b)
+{
+    _blocksA.push_back(b);
+}
+void Group::addB(Block* b)
+{
+    _blocksB.push_back(b);
+}
+int Group::areaA()
+{
+	int area=0;
+	for(size_t i=0;i<_blocksA.size();i++)
+	    area += _blocksA[i]->area(); 
+}
+int Group::areaB()
+{
+	int area=0;
+	for(size_t i=0;i<_blocksB.size();i++)
+	    area += _blocksB[i]->area(); 
+}
+void Group::swapAB()
+{
+	swap(_blocksA,_blocksB);
+}
 //}}}Group
 
 //Grid{{{
@@ -336,7 +398,6 @@ void Grid::addBlock(Block* _block)
 	}
 	blocks.push_back(_block);
 }
-
 Grid::~Grid() {}
 //}}}Grid
 

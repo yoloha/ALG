@@ -73,19 +73,23 @@ private:
 
 class Group
 {
+friend class BoundingBox;
 public:
 	Group();
 	~Group();
 
 	void addA(Block*);
 	void addB(Block*);
-	void addwindow(Window*)
+	int areaA();
+	int areaB();
+	void swapAB();
+	void addwindow(Window*);
 private:
 	int area;
-	vector<Block*> blocks_A;
-	vector<Block*> blocks_B;
+	vector<Block*> _blocksA;
+	vector<Block*> _blocksB;
 	//Note: area(A) > area(B)
-	vector<Window*> windows;
+	vector<Window*> _windows;
 };
 
 class Grid

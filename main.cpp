@@ -6,9 +6,9 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
- 	BoundingBox test;
+ 	BoundingBox Bbox;
  	ifstream ifs("./case_ex");
- 	test.readBlock(ifs);
- 	test.buildGroup();
- 	test.printInfo(cout);
+ 	Bbox.readBlock(ifs);
+ 	Bbox.buildGroup();
+ 	Bbox.printInfo(cout);
 }
