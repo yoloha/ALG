@@ -10,5 +10,6 @@ int main(int argc, char const *argv[])
  	ifstream ifs("./case_ex");
  	Bbox.readBlock(ifs);
  	Bbox.buildGroup();
+	Bbox.buildWindow();
  	Bbox.printInfo(cout);
 }

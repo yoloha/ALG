@@ -36,9 +36,11 @@ public:
 	void buildGroup();
 	void printInfo(ostream &);
 	void colorBlocks();
+	void buildWindow();
+	
 private:
 	int alpha, beta, omega;
-	vector<Window> _windows;
+	Window** _windows;
 	vector<Block> _blocks;
 	vector<Group> _Cgroup;
 	vector<Group> _NOgroup;
@@ -49,6 +51,8 @@ private:
 	bool checkBlockAdj(Block*,Block*);
 	bool checkConnected(Block*,Block*);
 	bool DFSvisit(Block*,int);
+	void buildBlocksAWindow(vector<pair<int,int> >&, int i);
+	void buildBlocksBWindow(vector<pair<int,int> >&, int i);
 };
 
 class Block
@@ -106,14 +110,19 @@ private:
 
 class Window
 {
+friend class BoundingBox;
 public:
 	Window();
+	Window(Coordinate);
 	~Window();
 private:
 	Coordinate windowCoord;
 	vector<Group*> innerGroup;
 	vector<Group*> crossGroup;
 	static int omega;
+	pair<int,int> idx;
+	double densityA;
+	double densityB;
 };
 
 #endif
