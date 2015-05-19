@@ -1,8 +1,9 @@
-#ifndef  COLOR_BALANCING_H
-#define COLOR_BALANCING_H
+#ifndef  COLORBALANCING_H
+#define COLORBALANCING_H
 
 #include <vector>
 #include <iostream>
+#include "OptMethod.h"
 
 
 using namespace std;
@@ -33,10 +34,11 @@ public:
 	BoundingBox();
 	~BoundingBox();
 	bool readBlock(istream &);
-	void buildGroup();
-	void printInfo(ostream &);
+	void buildGroup(connectBlockFlag);
 	void colorBlocks();
 	void buildWindow();
+	void printInfo(ostream &);
+	void output(ostream &);
 	
 private:
 	int alpha, beta, omega;
@@ -88,6 +90,7 @@ public:
 	int areaB();
 	void swapAB();
 	void addwindow(Window*);
+	//friend ostream& operator << (ostream& , const Group);
 private:
 	int area;
 	vector<Block*> _blocksA;
@@ -115,6 +118,7 @@ public:
 	Window();
 	Window(Coordinate);
 	~Window();
+	friend ostream& operator << (ostream&, const Window&);
 private:
 	Coordinate windowCoord;
 	vector<Group*> innerGroup;
