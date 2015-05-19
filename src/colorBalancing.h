@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include "OptMethod.h"
 
 using namespace std;
 
@@ -32,11 +33,12 @@ public:
 	BoundingBox();
 	~BoundingBox();
 	bool readBlock(istream &);
-	void buildGroup();
-	void printInfo(ostream &);
+	void buildGroup(connectBlockFlag);
 	void colorBlocks();
 	void buildWindow();
     void calWindowDensity();
+	void printInfo(ostream &);
+	void output(ostream &);
 	
 private:
 	int             alpha, beta, omega;
@@ -95,6 +97,7 @@ public:
 	int areaB(const Coordinate&);
 	void swapAB();
 	void addwindow(Window*);
+	//friend ostream& operator << (ostream& , const Group);
 
 private:
 	int area;
@@ -126,6 +129,7 @@ public:
 	Window();
 	Window(Coordinate);
 	~Window();
+	friend ostream& operator << (ostream&, const Window&);
 
 private:
 	Coordinate      windowCoord;
