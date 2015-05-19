@@ -1,5 +1,6 @@
 #include "colorBalancing.h"
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <fstream>
@@ -9,7 +10,9 @@
 #include <cmath>
 #include <algorithm>
 #include <utility>
+
 using namespace std;
+
 Coordinate parseBlock(string);
 
 //BoundingBox{{{
@@ -19,6 +22,16 @@ BoundingBox::BoundingBox()
 	Bbox_coord.x_right = numeric_limits<int>::min();
 	Bbox_coord.y_down = numeric_limits<int>::max();
 	Bbox_coord.y_up = numeric_limits<int>::min();
+}
+
+BoundingBox::~BoundingBox() 
+{
+	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
+	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	for(int i = 0; i < xmax_w ; ++i){
+		delete [] _windows[i];
+	}
+	delete []  _windows; 
 }
 
 bool BoundingBox::readBlock(istream & is)
@@ -226,16 +239,28 @@ void BoundingBox::printInfo(ostream& os)
 	os<<"BETA : "<<beta<<endl;
 	os<<"OMEGA : "<<omega<<endl;
 	os<<"Boundary : "<<Block(Bbox_coord);
+    for (int i = 0, l = _Cgroup.size(); i < l; i++) { 
+        os << "group" << i << ": ";
+        for (int j = 0, n = _Cgroup[i]._windows.size(); j < n; j++) { 
+            os << _Cgroup[i]._windows[j] -> windowCoord.x_left << "," 
+               << _Cgroup[i]._windows[j] -> windowCoord.y_down << "," 
+               << _Cgroup[i]._windows[j] -> windowCoord.x_right << "," 
+               << _Cgroup[i]._windows[j] -> windowCoord.y_up << "; ";
+        }
+        os << endl;
+    }
 	os<<"---------------------------------------------------------"<<endl;
 	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
 	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
 	for(int i=0;i<ymax_w;i++){
 		for(int j=0;j<xmax_w;j++){
-			os<<"WIN["<<i*xmax_w+j+1<<"]="<<_windows[j][i].windowCoord.x_left<<","<<
-				_windows[j][i].windowCoord.y_down<<","<<
-				_windows[j][i].windowCoord.x_right<<","<<
-				_windows[j][i].windowCoord.y_up<<"("<<
-				_windows[j][i].densityA<<" "<<_windows[j][i].densityB<<")"<<endl;
+			os << "WIN[" << i * xmax_w + j + 1 << "]="
+               << _windows[j][i].windowCoord.x_left << ","
+               << _windows[j][i].windowCoord.y_down << ","
+               << _windows[j][i].windowCoord.x_right << ","
+               << _windows[j][i].windowCoord.y_up << "("
+               << setprecision(2) << fixed << _windows[j][i].densityA << " "
+               << setprecision(2) << fixed << _windows[j][i].densityB << ")" <<endl;
 		}
 	}
 	for(size_t i=0;i<_NOgroup.size();i++){
@@ -548,28 +573,63 @@ void BoundingBox::buildBlocksBWindow(vector<pair<int,int> >& checkedwindow_g, in
 			}
 		}
 }
-
-BoundingBox::~BoundingBox() 
+    
+void 
+BoundingBox::calWindowDensity()
 {
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
-	for(int i = 0; i < xmax_w ; ++i){
-		delete [] _windows[i];
-	}
-	delete []  _windows; 
+    int xmax_w = (Bbox_coord.x_right - Bbox_coord.x_left) / omega + 1;
+    int ymax_w = (Bbox_coord.y_up - Bbox_coord.y_down) / omega + 1;
+
+    for (int i = 0; i < ymax_w; i++) {
+        for (int j = 0; j < xmax_w; j++) {
+            double areaA = 0, areaB = 0;
+            for (int k = 0, l = _windows[j][i].innerGroup.size(); k < l; k++) {
+                areaA += _windows[j][i].innerGroup[k] -> areaA();
+                areaB += _windows[j][i].innerGroup[k] -> areaB();
+            }
+            for (int k = 0, l = _windows[j][i].crossGroup.size(); k < l; k++) {
+                areaA += _windows[j][i].crossGroup[k] -> areaA(_windows[j][i].windowCoord);
+                areaB += _windows[j][i].crossGroup[k] -> areaB(_windows[j][i].windowCoord);
+            }
+            _windows[j][i].densityA = areaA / (omega * omega) * 100;
+            _windows[j][i].densityB = areaB / (omega * omega) * 100;
+        }
+    }
 }
+    
 //}}} BoundingBox
 
 //Block{{{
 Block::Block() {}
+Block::~Block() {}
 
 Block::Block(Coordinate _coord)
 {
 	blockCoord = _coord;
 }
+
 int Block::area()
 {
 	return (blockCoord.x_right - blockCoord.x_left)*(blockCoord.y_up - blockCoord.y_down);
+}
+	
+int 
+Block::area(const Coordinate& windowCoord)
+{
+    int x_right, x_left, y_up, y_down;
+    if (blockCoord.x_right < windowCoord.x_right) x_right = blockCoord.x_right;
+    else x_right = windowCoord.x_right;
+    if (blockCoord.x_left > windowCoord.x_left) x_left = blockCoord.x_left;
+    else x_left = windowCoord.x_left;
+    if (blockCoord.y_up < windowCoord.y_up) y_up = blockCoord.y_up;
+    else y_up = windowCoord.y_up;
+    if (blockCoord.y_down > windowCoord.y_down) y_down = blockCoord.y_down;
+    else y_down = windowCoord.y_down;
+    
+    int width = x_right - x_left;
+    int height = y_up - y_down;
+    if (width > 0 && height > 0) return width * height;
+    else return 0;
 }
 
 void Block::addAdjBlock(Block* _block)
@@ -583,32 +643,56 @@ ostream& operator << (ostream& os, const Block& rhs)
 	<<rhs.blockCoord.x_right<<","<<rhs.blockCoord.y_up<<endl;
 }
 
-Block::~Block() {}
 //}}}Block
 
 // Group{{{
 Group::Group() {}
 Group::~Group() {}
+
 void Group::addA(Block* b)
 {
     _blocksA.push_back(b);
 }
+
 void Group::addB(Block* b)
 {
     _blocksB.push_back(b);
 }
+
 int Group::areaA()
 {
 	int area=0;
 	for(size_t i=0;i<_blocksA.size();i++)
 	    area += _blocksA[i]->area();
+    return area;
 }
+	
+int 
+Group::areaA(const Coordinate& windowCoord)
+{
+    int area = 0;
+    for (size_t i = 0, n = _blocksA.size(); i < n; i++)
+        area += _blocksA[i] -> area(windowCoord);
+    return area;
+}
+
 int Group::areaB()
 {
 	int area=0;
 	for(size_t i=0;i<_blocksB.size();i++)
 	    area += _blocksB[i]->area();
+    return area;
 }
+
+int 
+Group::areaB(const Coordinate& windowCoord)
+{
+    int area = 0;
+    for (size_t i = 0, n = _blocksB.size(); i < n; i++)
+        area += _blocksB[i] -> area(windowCoord);
+    return area;
+}
+
 void Group::swapAB()
 {
 	swap(_blocksA,_blocksB);
