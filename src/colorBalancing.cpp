@@ -1,19 +1,8 @@
 #include "colorBalancing.h"
 #include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <fstream>
-#include <cstring>
 #include <vector>
-#include <limits>
-#include <cmath>
-#include <algorithm>
-#include <utility>
 
 using namespace std;
-
-Coordinate parseBlock(string);
 
 //Block{{{
 Block::Block() {}
@@ -56,8 +45,9 @@ void Block::addAdjBlock(Block* _block)
 
 ostream& operator << (ostream& os, const Block& rhs)
 {
-	os<<rhs.blockCoord.x_left<<","<<rhs.blockCoord.y_down<<","
-	<<rhs.blockCoord.x_right<<","<<rhs.blockCoord.y_up;
+	os << rhs.blockCoord.x_left << "," << rhs.blockCoord.y_down << ","
+	   << rhs.blockCoord.x_right << "," << rhs.blockCoord.y_up;
+    return os;
 }
     
 const int 
@@ -129,6 +119,7 @@ void Group::swapAB()
 
 //Grid{{{
 Grid::Grid() {}
+Grid::~Grid() {}
 
 void Grid::addBlock(Block* _block)
 {
@@ -137,7 +128,6 @@ void Grid::addBlock(Block* _block)
 	}
 	blocks.push_back(_block);
 }
-Grid::~Grid() {}
 //}}}Grid
 
 //Window{{{
@@ -152,9 +142,10 @@ Window::~Window() {}
 
 ostream& operator << (ostream& os, const Window& w)
 {
-	os<<"Window Id : ( "<< w.idx.first <<","<< w.idx.second << ")"<<endl;
+	os<<"Window Id : ("<< w.idx.first <<","<< w.idx.second << ")"<<endl;
 	os<<"InnerGroup : "<<w.innerGroup.size()<<endl;
 	os<<"CrossGroup : "<<w.crossGroup.size()<<endl;
+    return os;
 }
     
 const Coordinate 

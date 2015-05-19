@@ -1,9 +1,9 @@
 #ifndef COLOR_BALANCING_H
 #define COLOR_BALANCING_H
 
-#include <vector>
 #include <iostream>
-#include "OptMethod.h"
+#include <vector>
+#include "optMethod.h"
 
 using namespace std;
 
@@ -37,18 +37,20 @@ public:
 	void colorBlocks();
 	void buildWindow();
     void calWindowDensity();
+    void buildWindowsSet();
 	void printInfo(ostream &);
 	void output(ostream &);
 	
 private:
-	int             alpha, beta, omega;
-	Window**        _windows;
-	vector<Block>   _blocks;
-	vector<Group>   _Cgroup;
-	vector<Group*>  _crossGroup;
-	vector<Group>   _NOgroup;
-	Grid**          _grid;
-	Coordinate      Bbox_coord;
+	int                 alpha, beta, omega;
+	Window**            _windows;
+    vector<WindowsSet>  _windowsSet;
+	vector<Block>       _blocks;
+	vector<Group>       _Cgroup;
+	vector<Group*>      _crossGroup;
+	vector<Group>       _NOgroup;
+	Grid**              _grid;
+	Coordinate          Bbox_coord;
 
 	void addBlockToGrid(Block*);
 	bool checkBlockAdj(Block*,Block*);
@@ -57,6 +59,7 @@ private:
 	void buildBlocksAWindow(vector<pair<int,int> >&, int i);
 	void buildBlocksBWindow(vector<pair<int,int> >&, int i);
     //void calWindowDensity();
+    //void buildWindowsSet();
 };
 
 class Block

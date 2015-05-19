@@ -1,15 +1,10 @@
 #include "colorBalancing.h"
 #include <iostream>
 #include <iomanip>
+#include <vector>
 #include <sstream>
 #include <string>
-#include <fstream>
-#include <cstring>
-#include <vector>
 #include <limits>
-#include <cmath>
-#include <algorithm>
-#include <utility>
 
 using namespace std;
 
@@ -22,6 +17,16 @@ BoundingBox::BoundingBox()
 	Bbox_coord.x_right = numeric_limits<int>::min();
 	Bbox_coord.y_down = numeric_limits<int>::max();
 	Bbox_coord.y_up = numeric_limits<int>::min();
+}
+
+BoundingBox::~BoundingBox() 
+{
+	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
+	//int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	for(int i = 0; i < xmax_w ; ++i){
+		delete [] _windows[i];
+	}
+	delete []  _windows; 
 }
 
 bool BoundingBox::readBlock(istream & is)
@@ -73,8 +78,8 @@ bool BoundingBox::readBlock(istream & is)
 void BoundingBox::buildGroup(connectBlockFlag flag)
 {
 	if(flag == GRID_METHOD){
-		int grid_x_size = (Bbox_coord.x_right - Bbox_coord.x_left)/alpha + 1;
-		int grid_y_size = (Bbox_coord.y_up - Bbox_coord.y_down)/beta + 1;
+		size_t grid_x_size = (Bbox_coord.x_right - Bbox_coord.x_left)/alpha + 1;
+		size_t grid_y_size = (Bbox_coord.y_up - Bbox_coord.y_down)/beta + 1;
 
 		_grid = new Grid*[grid_x_size];
 		for(size_t i = 0; i < grid_x_size ; ++i){
@@ -101,55 +106,6 @@ void BoundingBox::buildGroup(connectBlockFlag flag)
 		}
 	}
 	colorBlocks();
-}
-
-
-
-void BoundingBox::printInfo(ostream& os)
-{
-	
-
-	os<<"------------------------DEBUG INFO-----------------------"<<endl;
-	os<<"ALPHA : "<<alpha<<endl;
-	os<<"BETA : "<<beta<<endl;
-	os<<"OMEGA : "<<omega<<endl;
-	os<<"Boundary : "<<Block(Bbox_coord);
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
-	for (size_t i = 0 ; i < xmax_w ; ++i){
-		for(size_t j = 0 ; j < ymax_w ; ++j)
-			os<<_windows[i][j];
-	}
-	os<<"---------------------------------------------------------"<<endl;
-}
-
-void BoundingBox::output(ostream& os)
-{
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
-	for(int i=0;i<ymax_w;i++){
-		for(int j=0;j<xmax_w;j++){
-			os << "WIN[" << i * xmax_w + j + 1 << "]=" 
-               << _windows[j][i].windowCoord.x_left << ","
-               << _windows[j][i].windowCoord.y_down << ","
-               << _windows[j][i].windowCoord.x_right << ","
-               << _windows[j][i].windowCoord.y_up << "("
-               << setprecision(2) << fixed << _windows[j][i].densityA << " "
-               << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;
-		}
-	}
-	for(size_t i=0;i<_NOgroup.size();i++){
-	    os<<"GROUP"<<endl;
-	    for(size_t j=0;j<_NOgroup[i]._blocksA.size();j++)
-	    	os<<"NO["<<j+1<<"]="<<*_NOgroup[i]._blocksA[j]<<endl;
-	}
-	for(size_t i=0;i<_Cgroup.size();i++){
-	    os<<"GROUP"<<endl;
-	    for(size_t j=0;j<_Cgroup[i]._blocksA.size();j++)
-	    	os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
-	    for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++)
-	    	os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
-	}
 }
 
 void BoundingBox::colorBlocks()
@@ -325,15 +281,87 @@ BoundingBox::calWindowDensity()
             }
         }
     }
+    for (int i = 0; i < ymax_w; i++) {
+        for (int j = 0; j < xmax_w; j++) {
+            _windows[j][i].densityA /= (omega * omega);
+            _windows[j][i].densityB /= (omega * omega);
+        }
+    }
+}
+    
+void 
+BoundingBox::buildWindowsSet()
+{
+    for (int i = 0, l = _crossGroup.size(); i < l; i++) {
+        //for (int j = 0, m = 
+    }
 }
 
-BoundingBox::~BoundingBox() 
+void BoundingBox::printInfo(ostream& os)
+{
+	
+
+	os<<"------------------------DEBUG INFO-----------------------"<<endl;
+	os<<"ALPHA : "<<alpha<<endl;
+	os<<"BETA : "<<beta<<endl;
+	os<<"OMEGA : "<<omega<<endl;
+	os<<"Boundary : "<<Block(Bbox_coord);
+	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
+	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	for (int i = 0 ; i < xmax_w ; ++i){
+		for(int j = 0 ; j < ymax_w ; ++j)
+			os<<_windows[i][j];
+	}
+	os<<"---------------------------------------------------------"<<endl;
+}
+
+void BoundingBox::output(ostream& os)
 {
 	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
 	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
-	for(int i = 0; i < xmax_w ; ++i){
-		delete [] _windows[i];
+	for(int i=0;i<ymax_w;i++){
+		for(int j=0;j<xmax_w;j++){
+			os << "WIN[" << i * xmax_w + j + 1 << "]=" 
+               << _windows[j][i].windowCoord.x_left << ","
+               << _windows[j][i].windowCoord.y_down << ","
+               << _windows[j][i].windowCoord.x_right << ","
+               << _windows[j][i].windowCoord.y_up << "("
+               << setprecision(2) << fixed << _windows[j][i].densityA << " "
+               << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;
+		}
 	}
-	delete []  _windows; 
+	for(size_t i=0;i<_NOgroup.size();i++){
+	    os<<"GROUP"<<endl;
+	    for(size_t j=0;j<_NOgroup[i]._blocksA.size();j++)
+	    	os<<"NO["<<j+1<<"]="<<*_NOgroup[i]._blocksA[j]<<endl;
+	}
+	for(size_t i=0;i<_Cgroup.size();i++){
+	    os<<"GROUP"<<endl;
+	    for(size_t j=0;j<_Cgroup[i]._blocksA.size();j++)
+	    	os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
+	    for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++)
+	    	os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
+	}
 }
 //}}} BoundingBox
+
+Coordinate parseBlock(string _coordstr)
+{
+	string token;
+	stringstream ss(_coordstr);
+	Coordinate _coord;
+	
+	getline(ss,token,',');
+	istringstream(token)>>_coord.x_left;  
+	
+	getline(ss,token,',');
+	istringstream(token)>>_coord.y_down ;
+	
+	getline(ss,token,',');
+	istringstream(token)>>_coord.x_right;
+	
+	getline(ss,token,',');
+	istringstream(token)>>_coord. y_up;
+
+	return _coord;
+}

@@ -41,7 +41,7 @@ git push [remote-name] [本地branch-name]:[遠端branch-name]
 git fetch [remote-name]
 從遠端擷取資料
 
-git pull
+git pull [remote-name] [branch-name]
 從遠端擷取資料並合併到現在的branch
 
 git branch [branch-name]
