@@ -284,6 +284,7 @@ BoundingBox::calWindowDensity()
     int xmax_w = (Bbox_coord.x_right - Bbox_coord.x_left) / omega + 1;
     int ymax_w = (Bbox_coord.y_up - Bbox_coord.y_down) / omega + 1;
 
+    /*
     for (int i = 0; i < ymax_w; i++) {
         for (int j = 0; j < xmax_w; j++) {
             double areaA = 0, areaB = 0;
@@ -297,6 +298,31 @@ BoundingBox::calWindowDensity()
             }
             _windows[j][i].densityA = areaA / (omega * omega) * 100;
             _windows[j][i].densityB = areaB / (omega * omega) * 100;
+        }
+    }
+    */
+    for (int i = 0; i < ymax_w; i++) {
+        for (int j = 0; j < xmax_w; j++) {
+            _windows[j][i].densityA = 0;
+            _windows[j][i].densityB = 0;
+            for (int k = 0, l = _windows[j][i].innerGroup.size(); k < l; k++) {
+                _windows[j][i].densityA += _windows[j][i].innerGroup[k] -> areaA();
+                _windows[j][i].densityB += _windows[j][i].innerGroup[k] -> areaB();
+            }
+        }
+    }
+    for (int i = 0, l = _crossGroup.size(); i < l; i++) {
+        for (int j = 0, m = _crossGroup[i] -> _blocksA.size(); j < m; j++) {
+            for (int k = 0, n = _crossGroup[i] -> _blocksA[j] -> crossWindowsNum(); k < n; k++) {
+                Coordinate windowCoord = _crossGroup[i] -> _blocksA[j] -> getWindowCoord(k); 
+                _windows[j][i].densityA += _crossGroup[i] -> _blocksA[j] -> area(windowCoord);
+            }
+        }
+        for (int j = 0, m = _crossGroup[i] -> _blocksB.size(); j < m; j++) {
+            for (int k = 0, n = _crossGroup[i] -> _blocksB[j] -> crossWindowsNum(); k < n; k++) {
+                Coordinate windowCoord = _crossGroup[i] -> _blocksB[j] -> getWindowCoord(k); 
+                _windows[j][i].densityA += _crossGroup[i] -> _blocksB[j] -> area(windowCoord);
+            }
         }
     }
 }

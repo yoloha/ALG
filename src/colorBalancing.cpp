@@ -16,14 +16,14 @@ using namespace std;
 Coordinate parseBlock(string);
 
 //Block{{{
-
 Block::Block() {}
-Block::~Block() {}
 
 Block::Block(Coordinate _coord)
 {
 	blockCoord = _coord;
 }
+
+Block::~Block() {}
 
 int Block::area()
 {
@@ -59,7 +59,18 @@ ostream& operator << (ostream& os, const Block& rhs)
 	os<<rhs.blockCoord.x_left<<","<<rhs.blockCoord.y_down<<","
 	<<rhs.blockCoord.x_right<<","<<rhs.blockCoord.y_up;
 }
-
+    
+const int 
+Block::crossWindowsNum()
+{ 
+    return windows.size();
+}
+    
+const Coordinate 
+Block::getWindowCoord(const int& i)
+{ 
+    return windows[i] -> getWindowCoord();
+}
 //}}}Block
 
 // Group{{{
@@ -137,12 +148,18 @@ Window::Window(Coordinate _coord)
 	windowCoord = _coord;
 }
 
+Window::~Window() {}
+
 ostream& operator << (ostream& os, const Window& w)
 {
 	os<<"Window Id : ( "<< w.idx.first <<","<< w.idx.second << ")"<<endl;
 	os<<"InnerGroup : "<<w.innerGroup.size()<<endl;
 	os<<"CrossGroup : "<<w.crossGroup.size()<<endl;
 }
-
-Window::~Window() {}
+    
+const Coordinate 
+Window::getWindowCoord() 
+{ 
+    return windowCoord;
+}
 //}}}Window

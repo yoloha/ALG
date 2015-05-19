@@ -12,7 +12,7 @@ int main(int argc, char const *argv[])
  	Bbox.readBlock(ifs);
  	Bbox.buildGroup(CHECKALL_METHOD);
 	Bbox.buildWindow();
-    Bbox.calWindowDensity();
+    Bbox.calWindowDensity(); // for debug
  	Bbox.printInfo(cout);
  	Bbox.output(cout);
 }

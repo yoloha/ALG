@@ -45,6 +45,7 @@ private:
 	Window**        _windows;
 	vector<Block>   _blocks;
 	vector<Group>   _Cgroup;
+	vector<Group*>  _crossGroup;
 	vector<Group>   _NOgroup;
 	Grid**          _grid;
 	Coordinate      Bbox_coord;
@@ -71,6 +72,9 @@ public:
 	int area(const Coordinate&);
 	void addAdjBlock(Block*);
 	friend ostream& operator << (ostream&, const Block&);
+
+    const int crossWindowsNum(); 
+    const Coordinate getWindowCoord(const int&);
     
 private:
 	Coordinate      blockCoord;
@@ -130,6 +134,7 @@ public:
 	Window(Coordinate);
 	~Window();
 	friend ostream& operator << (ostream&, const Window&);
+    const Coordinate getWindowCoord();
 
 private:
 	Coordinate      windowCoord;
