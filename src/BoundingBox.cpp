@@ -1,6 +1,7 @@
 #include "colorBalancing.h"
 #include "tm_usage.h"
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <fstream>
@@ -10,8 +11,11 @@
 #include <cmath>
 #include <algorithm>
 #include <utility>
+
 using namespace std;
+
 Coordinate parseBlock(string);
+
 //BoundingBox{{{
 BoundingBox::BoundingBox() 
 {
@@ -63,9 +67,9 @@ bool BoundingBox::readBlock(istream & is)
 		if(Bbox_coord.y_up < temp.y_up)
 			Bbox_coord.y_up = temp.y_up;
 	}
+
+    return true;
 }
-
-
 
 void BoundingBox::buildGroup(connectBlockFlag flag)
 {
@@ -126,11 +130,13 @@ void BoundingBox::output(ostream& os)
 	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
 	for(int i=0;i<ymax_w;i++){
 		for(int j=0;j<xmax_w;j++){
-			os<<"WIN["<<i*xmax_w+j+1<<"]="<<_windows[j][i].windowCoord.x_left<<","<<
-				_windows[j][i].windowCoord.y_down<<","<<
-				_windows[j][i].windowCoord.x_right<<","<<
-				_windows[j][i].windowCoord.y_up<<"("<<
-				_windows[j][i].densityA<<" "<<_windows[j][i].densityB<<")"<<endl;
+			os << "WIN[" << i * xmax_w + j + 1 << "]=" 
+               << _windows[j][i].windowCoord.x_left << ","
+               << _windows[j][i].windowCoord.y_down << ","
+               << _windows[j][i].windowCoord.x_right << ","
+               << _windows[j][i].windowCoord.y_up << "("
+               << setprecision(2) << fixed << _windows[j][i].densityA << " "
+               << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;
 		}
 	}
 	for(size_t i=0;i<_NOgroup.size();i++){
@@ -273,7 +279,28 @@ void BoundingBox::buildWindow()
 
 }
 
+void 
+BoundingBox::calWindowDensity()
+{
+    int xmax_w = (Bbox_coord.x_right - Bbox_coord.x_left) / omega + 1;
+    int ymax_w = (Bbox_coord.y_up - Bbox_coord.y_down) / omega + 1;
 
+    for (int i = 0; i < ymax_w; i++) {
+        for (int j = 0; j < xmax_w; j++) {
+            double areaA = 0, areaB = 0;
+            for (int k = 0, l = _windows[j][i].innerGroup.size(); k < l; k++) {
+                areaA += _windows[j][i].innerGroup[k] -> areaA();
+                areaB += _windows[j][i].innerGroup[k] -> areaB();
+            }
+            for (int k = 0, l = _windows[j][i].crossGroup.size(); k < l; k++) {
+                areaA += _windows[j][i].crossGroup[k] -> areaA(_windows[j][i].windowCoord);
+                areaB += _windows[j][i].crossGroup[k] -> areaB(_windows[j][i].windowCoord);
+            }
+            _windows[j][i].densityA = areaA / (omega * omega) * 100;
+            _windows[j][i].densityB = areaB / (omega * omega) * 100;
+        }
+    }
+}
 
 BoundingBox::~BoundingBox() 
 {

@@ -9,8 +9,8 @@
 #include <cmath>
 #include <algorithm>
 #include <utility>
-using namespace std;
 
+using namespace std;
 
 Coordinate parseBlock(string _coordstr)
 {
@@ -115,6 +115,7 @@ void BoundingBox::addBlockToGrid(Block* _block)
 		}
 	}
 }
+
 bool BoundingBox::checkBlockAdj(Block* b1, Block* b2)
 {
 	bool adj = false, x_overlap = false, y_overlap = false;
@@ -153,6 +154,7 @@ bool BoundingBox::DFSvisit(Block* b,int k)
     	if(b->adjBlocks[i]->visited==false)
     		DFSvisit(b->adjBlocks[i],k);
     }
+    return true;
 }
 
 void BoundingBox::buildBlocksAWindow(vector<pair<int,int> >& checkedwindow_g, int i)
