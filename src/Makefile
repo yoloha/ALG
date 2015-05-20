@@ -3,9 +3,9 @@ ARFLAGS  := cr
 CXX      := g++
 CPPFLAGS := -O2 -I../lib
 
-all : ../DPT_balance_color
+all : ../bin/DPT_balance_color
 
-../DPT_balance_color : main.o boundingBox.o boundingBox_private.o colorBalancing.o
+../bin/DPT_balance_color : main.o boundingBox.o boundingBox_private.o colorBalancing.o
 	$(CXX) $^ -o $@
 
 main.o: main.cpp boundingBox.o boundingBox_private.o colorBalancing.o

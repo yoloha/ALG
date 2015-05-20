@@ -5,16 +5,27 @@
 
 using namespace std;
 
+void help_message();
+
 int main(int argc, char const *argv[])
 {
+    if(argc != 2 && argc != 3) {
+       help_message();
+       return 0;
+    }
+
  	//TmUsage tmusg;
  	//TmStat stat;
  	//tmusg.totalStart();
 
  	BoundingBox Bbox;
- 	ifstream ifs("inputs/case_ex");
- 	Bbox.readBlock(ifs);
 
+    ifstream dofile(argv[1], ios::in);
+    if (!dofile) { 
+        cerr << "Cannot open input file \"" << argv[2] << "\"!!" << endl;
+        return false;
+    }
+ 	Bbox.readBlock(dofile);
 
  	//tmusg.periodStart();
  	Bbox.buildGroup(CHECKALL_METHOD);
@@ -28,6 +39,20 @@ int main(int argc, char const *argv[])
 
     Bbox.calWindowDensity(); // for debug
     
- 	Bbox.printInfo(cout);
- 	Bbox.output(cout);
+    if (argc == 3) {
+        ofstream outfile(argv[2], ios::out);
+        Bbox.printInfo(outfile);
+        Bbox.output(outfile);
+    }
+    else {
+ 	    Bbox.printInfo(cout);
+ 	    Bbox.output(cout);
+    }
+
+    return 0;
+}
+
+void help_message()
+{
+    cout << "usage: DPT_balance_color <input_file> <output_file>" << endl;
 }
