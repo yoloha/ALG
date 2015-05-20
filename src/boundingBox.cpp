@@ -299,13 +299,11 @@ BoundingBox::buildWindowsSet()
 
 void BoundingBox::printInfo(ostream& os)
 {
-	
-
 	os<<"------------------------DEBUG INFO-----------------------"<<endl;
 	os<<"ALPHA : "<<alpha<<endl;
 	os<<"BETA : "<<beta<<endl;
 	os<<"OMEGA : "<<omega<<endl;
-	os<<"Boundary : "<<Block(Bbox_coord);
+	os<<"Boundary : "<<Block(Bbox_coord)<<endl;
 	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
 	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
 	for (int i = 0 ; i < xmax_w ; ++i){
