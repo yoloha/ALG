@@ -111,10 +111,6 @@ void BoundingBox::buildGroup(connectBlockFlag flag)
 void BoundingBox::colorBlocks()
 {
 	int k=0;
-	int xmin=Bbox_coord.x_right;
-	int xmax=Bbox_coord.x_left;
-	int ymin=Bbox_coord.y_up;
-	int ymax=Bbox_coord.y_down;
 	// find CC
 	for(size_t i=0; i<_blocks.size();++i){
 	    _blocks[i].visited=false;
@@ -152,6 +148,10 @@ void BoundingBox::colorBlocks()
         }
     }
     // add to group & update Bbox_coord
+    int xmin=Bbox_coord.x_right;
+	int xmax=Bbox_coord.x_left;
+	int ymin=Bbox_coord.y_up;
+	int ymax=Bbox_coord.y_down;
     for(int i=0;i<k;i++){
     	if(colorable[i]==true){
     		Group* colorGroup = new Group;
@@ -185,10 +185,12 @@ void BoundingBox::colorBlocks()
             _NOgroup.push_back(*noGroup);
     	}
     }
-    Bbox_coord.x_left =xmin;
-    Bbox_coord.x_right=xmax;
-    Bbox_coord.y_up   =ymax;
-    Bbox_coord.y_down =ymin;
+    if(_Cgroup.size() != 0){
+	    Bbox_coord.x_left =xmin;
+	    Bbox_coord.x_right=xmax;
+	    Bbox_coord.y_up   =ymax;
+	    Bbox_coord.y_down =ymin;
+	}
 }
 
 void BoundingBox::buildWindow()
