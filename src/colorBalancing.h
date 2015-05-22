@@ -38,7 +38,7 @@ public:
 private:
 	int                 alpha, beta, omega;
 	Window**            _windows;
-    vector<WindowsSet>  _windowsSet;
+    vector<WindowsSet*> _windowsSet;
 	vector<Block>       _blocks;
 	vector<Group>       _Cgroup;
 	vector<Group*>      _crossGroup;
@@ -143,10 +143,11 @@ public:
     const Coordinate getWindowCoord();
 
 private:
-	Coordinate      windowCoord;
-	vector<Group*>  innerGroup;
-	vector<Group*>  crossGroup;
 	static int      omega;
+	Coordinate      windowCoord;
+    WindowsSet*     _windowSet;
+	vector<Group*>  innerGroup;
+	vector<Group*>  crossGroup; // 
 	pair<int,int>   idx;
 	double          densityA;
 	double          densityB;
@@ -155,8 +156,11 @@ private:
 // For optimization
 class WindowsSet
 {
+friend class BoundingBox;
+
 public:
-    WindowsSet() {}
+    WindowsSet() : _groupNum(0), _sim(0), _densityDiffSum(-1) {}
+    WindowsSet(Window*);
     ~WindowsSet() {}
 
     void simulate(const size_t&);
@@ -168,6 +172,8 @@ private:
     size_t          _sim;
     double          _densityDiffSum;
 
+    void addWindow(Window*);
+    void addCrossGroup(Group*);
     bool calWinDensityDiffSum();
 };
 

@@ -232,8 +232,6 @@ void BoundingBox::buildWindow()
 			}
 		}
 	}
-
-
 }
 
 void 
@@ -321,8 +319,38 @@ BoundingBox::calWindowDensity()
 void 
 BoundingBox::buildWindowsSet()
 {
+    vector<WindowsSet*> sets;
+    int xmax_w = (Bbox_coord.x_right - Bbox_coord.x_left) / omega + 1;
+    int ymax_w = (Bbox_coord.y_up - Bbox_coord.y_down) / omega + 1;
+    for (int i = 0; i < ymax_w; i++) {
+        for (int j = 0; j < xmax_w; j++) {
+            sets.push_back(new WindowsSet(&_windows[j][i]));
+            _windows[j][i]._windowSet = sets.back(); 
+        }
+    }
+
     for (int i = 0, l = _crossGroup.size(); i < l; i++) {
-        //for (int j = 0, m = 
+        Window* winLead = _crossGroup[i] -> _windows[0];
+        for (int j = 1, m = _crossGroup[i] -> _windows.size(); j < m; j++) {
+            Window* win = _crossGroup[i] -> _windows[j];
+            if(winLead -> _windowSet != win -> _windowSet) {
+                WindowsSet* windowsSet = win -> _windowSet;
+                for (int k = 0, n = windowsSet -> _windows.size(); k < n; k++) { 
+                    winLead -> _windowSet -> addWindow(windowsSet -> _windows[k]);
+                    windowsSet -> _windows[k] -> _windowSet = winLead -> _windowSet;
+                }
+                windowsSet -> _windows.clear();
+            }
+        }
+        winLead -> _windowSet -> addCrossGroup(_crossGroup[i]);
+    }
+
+    for (int i = 0, l = sets.size(); i< l; i++) {
+        if (sets[i] -> _windows.empty()) delete sets[i];
+        else {
+            _windowsSet.push_back(sets[i]);
+            sets[i] -> calWinDensityDiffSum(); 
+        }
     }
 }
 

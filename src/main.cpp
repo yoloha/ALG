@@ -54,5 +54,6 @@ int main(int argc, char const *argv[])
 
 void help_message()
 {
-    cout << "usage: DPT_balance_color <input_file> <output_file>" << endl;
+    cout << "USAGE: DPT_balance_color <input_file> [<output_file>]" << endl
+         << "DESCRIPTION: output file is optional" << endl;
 }

@@ -156,6 +156,26 @@ Window::getWindowCoord()
 
 /********************* WindowsSet *************************/
     
+WindowsSet::WindowsSet(Window* w) :  _sim(0), _densityDiffSum(-1)
+{
+    _windows.push_back(w);
+    _groupNum = w -> innerGroup.size();
+}
+    
+void 
+WindowsSet::addWindow(Window* w)
+{
+    _windows.push_back(w);
+    _groupNum += w -> innerGroup.size();
+}
+    
+void 
+WindowsSet::addCrossGroup(Group* g)
+{
+    _crossGroup.push_back(g);
+    _groupNum++;
+}
+
 void 
 WindowsSet::simulate(const size_t& sim) 
 {
@@ -254,6 +274,8 @@ WindowsSet::calWinDensityDiffSum()
         densityDiffSum += abs(_windows[i] -> densityA - _windows[i] -> densityB);
     }
 
+    if (_densityDiffSum == -1) return true; 
+
     if (densityDiffSum < _densityDiffSum) return true;
     else {
         for (int i = 0, l = _windows.size(); i < l; i++) {
@@ -263,5 +285,5 @@ WindowsSet::calWinDensityDiffSum()
         return false;
     }
 }
-
+    
 /********************* WindowsSet *************************/
