@@ -7,10 +7,11 @@
 
 using namespace std;
 
-class Window;
 class Block;
 class Group;
 class Grid;
+class Window;
+class WindowsSet;
 
 struct Coordinate
 {
@@ -19,13 +20,6 @@ struct Coordinate
 	int y_up;
 	int y_down;
 };
-
-// For optimization
-struct WindowsSet
-{
-	vector<Window*> _disjointWindows;
-};
-
 
 class BoundingBox
 {
@@ -76,8 +70,8 @@ public:
 	void addAdjBlock(Block*);
 	friend ostream& operator << (ostream&, const Block&);
 
-    const int crossWindowsNum(); 
-    const Coordinate getWindowCoord(const int&);
+    const int crossWindowsNum() { return windows.size(); } 
+    Window* getWindow(const int& i) { return windows[i]; }
     
 private:
 	Coordinate      blockCoord;
@@ -98,16 +92,24 @@ public:
 
 	void addA(Block*);
 	void addB(Block*);
+    void swapAB();
+	void addwindow(Window*);
+	//friend ostream& operator << (ostream& , const Group);
+
+    const bool getColor() { return _color; }
+    void setColor(const int&);
 	int areaA();
 	int areaA(const Coordinate&);
 	int areaB();
 	int areaB(const Coordinate&);
-	void swapAB();
-	void addwindow(Window*);
-	//friend ostream& operator << (ostream& , const Group);
+    const int getBlocksANum() { return _blocksA.size(); }
+    const int getBlocksBNum() { return _blocksB.size(); }
+    Block* getBlocksA(const int& i) { return _blocksA[i]; }
+    Block* getBlocksB(const int& i) { return _blocksB[i]; }
 
 private:
-	int area;
+    bool            _color;
+	//int area;
 	vector<Block*>  _blocksA;
 	vector<Block*>  _blocksB;
 	//Note: area(A) > area(B)
@@ -131,6 +133,7 @@ private:
 class Window
 {
 friend class BoundingBox;
+friend class WindowsSet;
 
 public:
 	Window();
@@ -147,6 +150,25 @@ private:
 	pair<int,int>   idx;
 	double          densityA;
 	double          densityB;
+};
+
+// For optimization
+class WindowsSet
+{
+public:
+    WindowsSet() {}
+    ~WindowsSet() {}
+
+    void simulate(const size_t&);
+
+private:
+    vector<Window*> _windows;
+	vector<Group*>  _crossGroup;
+    size_t          _groupNum;
+    size_t          _sim;
+    double          _densityDiffSum;
+
+    bool calWinDensityDiffSum();
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include "colorBalancing.h"
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -49,18 +50,6 @@ ostream& operator << (ostream& os, const Block& rhs)
 	   << rhs.blockCoord.x_right << "," << rhs.blockCoord.y_up;
     return os;
 }
-    
-const int 
-Block::crossWindowsNum()
-{ 
-    return windows.size();
-}
-    
-const Coordinate 
-Block::getWindowCoord(const int& i)
-{ 
-    return windows[i] -> getWindowCoord();
-}
 //}}}Block
 
 // Group{{{
@@ -75,6 +64,18 @@ void Group::addA(Block* b)
 void Group::addB(Block* b)
 {
     _blocksB.push_back(b);
+}
+
+void Group::swapAB()
+{
+	swap(_blocksA,_blocksB);
+}
+    
+void 
+Group::setColor(const int& color)
+{
+    if (color) _color = true;
+    else _color = false;
 }
 
 int Group::areaA()
@@ -110,11 +111,6 @@ Group::areaB(const Coordinate& windowCoord)
         area += _blocksB[i] -> area(windowCoord);
     return area;
 }
-
-void Group::swapAB()
-{
-	swap(_blocksA,_blocksB);
-}
 //}}}Group
 
 //Grid{{{
@@ -140,6 +136,9 @@ Window::Window(Coordinate _coord)
 
 Window::~Window() {}
 
+int
+Window::omega = 0;
+
 ostream& operator << (ostream& os, const Window& w)
 {
 	os<<"Window Id : ("<< w.idx.first <<","<< w.idx.second << ")"<<endl;
@@ -154,3 +153,115 @@ Window::getWindowCoord()
     return windowCoord;
 }
 //}}}Window
+
+/********************* WindowsSet *************************/
+    
+void 
+WindowsSet::simulate(const size_t& sim) 
+{
+    if (sim == _sim) return;
+
+    size_t simTmp = sim;
+    for (int i = 0, l = _windows.size(); i < l; i++) {
+        for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; n++) {
+            _windows[i] -> innerGroup[j] -> setColor(simTmp % 2);
+            simTmp /= 2;
+        }
+    }
+    for (int i = 0, l = _crossGroup.size(); i < l; i++) {
+        _crossGroup[i] -> setColor(simTmp % 2);
+        simTmp /= 2;
+    }
+
+    if (calWinDensityDiffSum()) _sim = sim;
+    else {
+        simTmp = _sim;
+        for (int i = 0, l = _windows.size(); i < l; i++) {
+            for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; n++) {
+                _windows[i] -> innerGroup[j] -> setColor(simTmp % 2);
+                simTmp /= 2;
+            }
+        }
+        for (int i = 0, l = _crossGroup.size(); i < l; i++) {
+            _crossGroup[i] -> setColor(simTmp % 2);
+            simTmp /= 2;
+        }
+    }
+}
+    
+bool 
+WindowsSet::calWinDensityDiffSum()
+{
+    vector<double> densityA, densityB;
+    for (int i = 0, l = _windows.size(); i < l; i++) {
+        densityA.push_back(_windows[i] -> densityA);
+        densityB.push_back(_windows[i] -> densityB);
+    }
+
+    for (int i = 0, l = _windows.size(); i < l; i++) {
+        _windows[i] -> densityA = 0;
+        _windows[i] -> densityB = 0;
+        for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; n++) {
+            if (_windows[i] -> innerGroup[j] -> getColor()) {
+                _windows[i] -> densityA += _windows[i] -> innerGroup[j] -> areaA();
+                _windows[i] -> densityB += _windows[i] -> innerGroup[j] -> areaB();
+            }
+            else {
+                _windows[i] -> densityA += _windows[i] -> innerGroup[j] -> areaB();
+                _windows[i] -> densityB += _windows[i] -> innerGroup[j] -> areaA();
+            }
+        }
+    }
+    for (int i = 0, l = _crossGroup.size(); i < l; i++) {
+        if (_crossGroup[i] -> getColor()) {
+            for (int j = 0, m = _crossGroup[i] -> getBlocksANum(); j < m; j++) {
+                Block* block = _crossGroup[i] -> getBlocksA(j);
+                for (int k = 0, n = block -> crossWindowsNum(); k < n; k++) {
+                    Window* win = block -> getWindow(k); 
+                    win -> densityA += block -> area(win -> windowCoord);
+                }
+            }
+            for (int j = 0, m = _crossGroup[i] -> getBlocksBNum(); j < m; j++) {
+                Block* block = _crossGroup[i] -> getBlocksB(j);
+                for (int k = 0, n = block -> crossWindowsNum(); k < n; k++) {
+                    Window* win = block -> getWindow(k); 
+                    win -> densityB += block -> area(win -> windowCoord);
+                }
+            }
+        }
+        else {
+            for (int j = 0, m = _crossGroup[i] -> getBlocksANum(); j < m; j++) {
+                Block* block = _crossGroup[i] -> getBlocksA(j);
+                for (int k = 0, n = block -> crossWindowsNum(); k < n; k++) {
+                    Window* win = block -> getWindow(k); 
+                    win -> densityB += block -> area(win -> windowCoord);
+                }
+            }
+            for (int j = 0, m = _crossGroup[i] -> getBlocksBNum(); j < m; j++) {
+                Block* block = _crossGroup[i] -> getBlocksB(j);
+                for (int k = 0, n = block -> crossWindowsNum(); k < n; k++) {
+                    Window* win = block -> getWindow(k); 
+                    win -> densityA += block -> area(win -> windowCoord);
+                }
+            }
+        }
+    }
+
+    double densityDiffSum = 0;
+    for (int i = 0, l = _windows.size(); i < l; i++) {
+        _windows[i] -> densityA /= (_windows[i] -> omega * _windows[i] -> omega) * 100; 
+        _windows[i] -> densityB /= (_windows[i] -> omega * _windows[i] -> omega) * 100; 
+        densityDiffSum += abs(_windows[i] -> densityA - _windows[i] -> densityB);
+    }
+
+    if (densityDiffSum < _densityDiffSum) return true;
+    else {
+        for (int i = 0, l = _windows.size(); i < l; i++) {
+            _windows[i] -> densityA = densityA[i]; 
+            _windows[i] -> densityB = densityB[i]; 
+        }
+        return false;
+    }
+}
+
+/********************* WindowsSet *************************/
