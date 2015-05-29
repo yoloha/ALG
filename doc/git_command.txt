@@ -71,6 +71,7 @@ git branch -v
 
 modified file 
 => git add [file-name] 
+   (git add *   一次性的把所有被修改的檔案上傳)
 => git commit -m "..." 
 => git push [remote-name] [branch-name]:[branch-name]
 

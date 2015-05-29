@@ -352,6 +352,9 @@ BoundingBox::buildWindowsSet()
 			sets[i] -> calWinDensityDiffSum(); 
 		}
 	}
+
+    for (int i = 0, l = _windowsSet.size(); i < l; i++)
+        _windowsSet[i] -> buildAreaMatrix();
 }
 
 void BoundingBox::printInfo(ostream& os)

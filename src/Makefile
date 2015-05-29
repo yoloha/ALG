@@ -25,4 +25,4 @@ optimize.o : optimize.cpp colorBalancing.h ../lib/rnGen.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 clean :
-	rm *.o
+	-rm *.o

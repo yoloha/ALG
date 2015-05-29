@@ -13,6 +13,8 @@ class Grid;
 class Window;
 class WindowsSet;
 
+typedef vector<int> GrpAreaInWin;
+
 struct Coordinate
 {
 	int x_left;
@@ -169,14 +171,17 @@ public:
 	friend ostream& operator <<(ostream& ,const WindowsSet&);
 
 private:
-	vector<Window*> _windows;
-	vector<Group*>  _crossGroup;
-	size_t          _groupNum;
-	size_t          _sim;
-	double          _densityDiffSum;
+	vector<Window*>         _windows;
+	vector<Group*>          _crossGroup;
+    vector<GrpAreaInWin>    _areaMatrix;
+	size_t                  _groupNum;
+	size_t                  _sim;
+	double                  _densityDiffSum;
 
 	void addWindow(Window*);
 	void addCrossGroup(Group*);
+    void buildAreaMatrix();
+
 	bool calWinDensityDiffSum();
 };
 

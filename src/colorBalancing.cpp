@@ -176,15 +176,68 @@ WindowsSet::addCrossGroup(Group* g)
 	_crossGroup.push_back(g);
 	_groupNum++;
 }
+    
+void 
+WindowsSet::buildAreaMatrix()
+{
+    GrpAreaInWin init;
+    init.resize(_groupNum, 0);
+    _areaMatrix.resize(_windows.size(), init);
+
+    int cnt = 0;
+    for (int i = 0, l = _windows.size(); i < l; i++) {
+        for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; j++, cnt++) {
+            _areaMatrix[i][cnt] += _windows[i] -> innerGroup[j] -> areaA();
+            _areaMatrix[i][cnt] -= _windows[i] -> innerGroup[j] -> areaB();
+        }
+    }
+    for (int i = 0, l = _crossGroup.size(); i < l; i++, cnt++) {
+        for (int j = 0, n = _windows.size(); j < n; j++) {
+            Coordinate winCoord = _windows[j] -> getWindowCoord();
+            _areaMatrix[j][cnt] += _crossGroup[i] -> areaA(winCoord);
+            _areaMatrix[j][cnt] -= _crossGroup[i] -> areaB(winCoord);
+        }
+    }
+}
 
 void 
 WindowsSet::simulate(const size_t& sim) 
 {
 	if (sim == _sim) return;
 
+    GrpAreaInWin totalArea;
+    totalArea.resize(_groupNum, 0);
+
+    size_t simTmp = sim;
+    for (int i = 0, l = _areaMatrix.size(); i < l ; i++) {
+        if (simTmp % 2) {
+            for (size_t j = 0; j < _groupNum; j++)
+                totalArea[j] += _areaMatrix[i][j];
+        }
+        else {
+            for (size_t j = 0; j < _groupNum; j++)
+                totalArea[j] -= _areaMatrix[i][j];
+        }
+        simTmp /=2;
+    }
+
+    double densityDiffSum = 0;
+    for (int i = 0, l = totalArea.size(); i < l; i++)
+        densityDiffSum += abs(totalArea[i]);
+	densityDiffSum /= (Window::omega * Window::omega) * 100; 
+
+	if (_densityDiffSum == -1) return;
+
+    if (densityDiffSum < _densityDiffSum) {
+        _sim = sim;
+        _densityDiffSum = densityDiffSum;
+        // reset group's color
+    }
+
+    /*
 	size_t simTmp = sim;
 	for (int i = 0, l = _windows.size(); i < l; i++) {
-		for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; n++) {
+		for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; j++) {
 			_windows[i] -> innerGroup[j] -> setColor(simTmp % 2);
 			simTmp /= 2;
 		}
@@ -198,7 +251,7 @@ WindowsSet::simulate(const size_t& sim)
 	else {
 		simTmp = _sim;
 		for (int i = 0, l = _windows.size(); i < l; i++) {
-			for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; n++) {
+			for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; j++) {
 				_windows[i] -> innerGroup[j] -> setColor(simTmp % 2);
 				simTmp /= 2;
 			}
@@ -208,6 +261,7 @@ WindowsSet::simulate(const size_t& sim)
 			simTmp /= 2;
 		}
 	}
+    */
 }
 	
 bool 
@@ -270,8 +324,8 @@ WindowsSet::calWinDensityDiffSum()
 
 	double densityDiffSum = 0;
 	for (int i = 0, l = _windows.size(); i < l; i++) {
-		_windows[i] -> densityA /= (_windows[i] -> omega * _windows[i] -> omega) * 100; 
-		_windows[i] -> densityB /= (_windows[i] -> omega * _windows[i] -> omega) * 100; 
+		_windows[i] -> densityA /= (Window::omega * Window::omega) * 100; 
+		_windows[i] -> densityB /= (Window::omega * Window::omega) * 100; 
 		densityDiffSum += abs(_windows[i] -> densityA - _windows[i] -> densityB);
 	}
 
