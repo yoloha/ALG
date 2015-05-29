@@ -30,15 +30,15 @@ public:
 	void buildGroup(connectBlockFlag);
 	void colorBlocks();
 	void buildWindow();
-    void calWindowDensity();
-    void buildWindowsSet();
+		void calWindowDensity();
+		void buildWindowsSet();
 	void printInfo(ostream &);
 	void output(ostream &);
 	
 private:
 	int                 alpha, beta, omega;
 	Window**            _windows;
-    vector<WindowsSet*> _windowsSet;
+	vector<WindowsSet*> _windowsSet;
 	vector<Block>       _blocks;
 	vector<Group>       _Cgroup;
 	vector<Group*>      _crossGroup;
@@ -52,8 +52,8 @@ private:
 	bool DFSvisit(Block*,int);
 	void buildBlocksAWindow(vector<pair<int,int> >&, int i);
 	void buildBlocksBWindow(vector<pair<int,int> >&, int i);
-    //void calWindowDensity();
-    //void buildWindowsSet();
+	//void calWindowDensity();
+	//void buildWindowsSet();
 };
 
 class Block
@@ -70,9 +70,9 @@ public:
 	void addAdjBlock(Block*);
 	friend ostream& operator << (ostream&, const Block&);
 
-    const int crossWindowsNum() { return windows.size(); } 
-    Window* getWindow(const int& i) { return windows[i]; }
-    
+	const int crossWindowsNum() { return windows.size(); } 
+	Window* getWindow(const int& i) { return windows[i]; }
+	
 private:
 	Coordinate      blockCoord;
 	vector<Block*>  adjBlocks;
@@ -92,23 +92,23 @@ public:
 
 	void addA(Block*);
 	void addB(Block*);
-    void swapAB();
+	void swapAB();
 	void addwindow(Window*);
 	//friend ostream& operator << (ostream& , const Group);
 
-    const bool getColor() { return _color; }
-    void setColor(const int&);
+	 const bool getColor() { return _color; }
+		void setColor(const int&);
 	int areaA();
 	int areaA(const Coordinate&);
 	int areaB();
 	int areaB(const Coordinate&);
-    const int getBlocksANum() { return _blocksA.size(); }
-    const int getBlocksBNum() { return _blocksB.size(); }
-    Block* getBlocksA(const int& i) { return _blocksA[i]; }
-    Block* getBlocksB(const int& i) { return _blocksB[i]; }
+		const int getBlocksANum() { return _blocksA.size(); }
+	const int getBlocksBNum() { return _blocksB.size(); }
+		Block* getBlocksA(const int& i) { return _blocksA[i]; }
+	Block* getBlocksB(const int& i) { return _blocksB[i]; }
 
 private:
-    bool            _color;
+	bool            _color;
 	//int area;
 	vector<Block*>  _blocksA;
 	vector<Block*>  _blocksB;
@@ -140,12 +140,12 @@ public:
 	Window(Coordinate);
 	~Window();
 	friend ostream& operator << (ostream&, const Window&);
-    const Coordinate getWindowCoord();
+		const Coordinate getWindowCoord();
 
 private:
 	static int      omega;
 	Coordinate      windowCoord;
-    WindowsSet*     _windowSet;
+		WindowsSet*     _windowSet;
 	vector<Group*>  innerGroup;
 	vector<Group*>  crossGroup; // 
 	pair<int,int>   idx;
@@ -159,22 +159,25 @@ class WindowsSet
 friend class BoundingBox;
 
 public:
-    WindowsSet() : _groupNum(0), _sim(0), _densityDiffSum(-1) {}
-    WindowsSet(Window*);
-    ~WindowsSet() {}
+	WindowsSet() : _groupNum(0), _sim(0), _densityDiffSum(-1) {}
+	WindowsSet(Window*);
+	~WindowsSet() {}
 
-    void simulate(const size_t&);
+	void simulate(const size_t&);
+	void randSim(int max_time);
+	void linearSolve();
+	friend ostream& operator <<(ostream& ,const WindowsSet&);
 
 private:
-    vector<Window*> _windows;
+	vector<Window*> _windows;
 	vector<Group*>  _crossGroup;
-    size_t          _groupNum;
-    size_t          _sim;
-    double          _densityDiffSum;
+	size_t          _groupNum;
+	size_t          _sim;
+	double        _densityDiffSum;
 
-    void addWindow(Window*);
-    void addCrossGroup(Group*);
-    bool calWinDensityDiffSum();
+	void addWindow(Window*);
+	void addCrossGroup(Group*);
+	bool calWinDensityDiffSum();
 };
 
 #endif
