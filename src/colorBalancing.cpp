@@ -144,7 +144,6 @@ ostream& operator << (ostream& os, const Window& w)
 {
 	os<<"Window Id : ("<< w.idx.first <<","<< w.idx.second << ")"<<endl;
 	os<<"InnerGroup : "<<w.innerGroup.size()<<endl;
-	os<<"CrossGroup : "<<w.crossGroup.size()<<endl;
 	return os;
 }
 	

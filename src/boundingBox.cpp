@@ -227,9 +227,7 @@ void BoundingBox::buildWindow()
 		if( checkedwindow_g.size()==1 )
 			_windows[checkedwindow_g[0].first-1][checkedwindow_g[0].second-1].innerGroup.push_back( &_Cgroup[i] );
 		else{
-			for (size_t j = 0; j < checkedwindow_g.size(); j++){
-				_windows[checkedwindow_g[j].first-1][checkedwindow_g[j].second-1].crossGroup.push_back( &_Cgroup[i] );
-			}
+			_crossGroup.push_back( &_Cgroup[i] );
 		}
 	}
 }
@@ -239,7 +237,7 @@ BoundingBox::calWindowDensity()
 {
 	int xmax_w = (Bbox_coord.x_right - Bbox_coord.x_left) / omega + 1;
 	int ymax_w = (Bbox_coord.y_up - Bbox_coord.y_down) / omega + 1;
-
+	/*
 	for (int i = 0; i < ymax_w; i++) {
 		for (int j = 0; j < xmax_w; j++) {
 			double areaA = 0, areaB = 0;
@@ -255,7 +253,8 @@ BoundingBox::calWindowDensity()
 			_windows[j][i].densityB = areaB / (omega * omega) * 100;
 		}
 	}
-	/*
+	*/
+	
 	for (int i = 0; i < ymax_w; i++) {
 		for (int j = 0; j < xmax_w; j++) {
 			_windows[j][i].densityA = 0;
@@ -309,11 +308,11 @@ BoundingBox::calWindowDensity()
 
 	for (int i = 0; i < ymax_w; i++) {
 		for (int j = 0; j < xmax_w; j++) {
-			_windows[j][i].densityA /= (omega * omega) * 100;
-			_windows[j][i].densityB /= (omega * omega) * 100;
+			_windows[j][i].densityA /= (omega * omega) / 100;
+			_windows[j][i].densityB /= (omega * omega) / 100;
 		}
 	}
-	*/
+	
 }
 	
 void 

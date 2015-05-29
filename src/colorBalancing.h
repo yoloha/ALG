@@ -149,7 +149,6 @@ private:
 	Coordinate      windowCoord;
 	WindowsSet*     _windowSet;
 	vector<Group*>  innerGroup;
-	vector<Group*>  crossGroup; // 
 	pair<int,int>   idx;
 	double          densityA;
 	double          densityB;
