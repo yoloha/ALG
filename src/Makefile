@@ -1,7 +1,8 @@
 AR       := ar
 ARFLAGS  := cr
 CXX      := g++
-CPPFLAGS := -O2 -I../lib
+#CPPFLAGS := -O2 -I../lib
+CPPFLAGS := -g -Wall -I../lib
 
 all : ../bin/DPT_balance_color
 
@@ -19,9 +20,9 @@ boundingBox_private.o : boundingBox_private.cpp colorBalancing.h
 
 colorBalancing.o : colorBalancing.cpp colorBalancing.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
+
 optimize.o : optimize.cpp colorBalancing.h ../lib/rnGen.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 clean :
 	rm *.o
-

@@ -368,7 +368,7 @@ void BoundingBox::printInfo(ostream& os)
 			os<<_windows[i][j];
 	}
 	for (size_t i = 0 ; i <_windowsSet.size();++i){
-		cout<<_windowsSet[i]<<endl;
+		os<<*_windowsSet[i]<<endl;
 	}
 	os<<"---------------------------------------------------------"<<endl;
 }

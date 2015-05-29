@@ -30,8 +30,8 @@ public:
 	void buildGroup(connectBlockFlag);
 	void colorBlocks();
 	void buildWindow();
-		void calWindowDensity();
-		void buildWindowsSet();
+	void calWindowDensity();
+	void buildWindowsSet();
 	void printInfo(ostream &);
 	void output(ostream &);
 	
@@ -96,15 +96,15 @@ public:
 	void addwindow(Window*);
 	//friend ostream& operator << (ostream& , const Group);
 
-	 const bool getColor() { return _color; }
-		void setColor(const int&);
+	const bool getColor() { return _color; }
+	void setColor(const int&);
 	int areaA();
 	int areaA(const Coordinate&);
 	int areaB();
 	int areaB(const Coordinate&);
-		const int getBlocksANum() { return _blocksA.size(); }
+	const int getBlocksANum() { return _blocksA.size(); }
 	const int getBlocksBNum() { return _blocksB.size(); }
-		Block* getBlocksA(const int& i) { return _blocksA[i]; }
+	Block* getBlocksA(const int& i) { return _blocksA[i]; }
 	Block* getBlocksB(const int& i) { return _blocksB[i]; }
 
 private:
@@ -140,12 +140,12 @@ public:
 	Window(Coordinate);
 	~Window();
 	friend ostream& operator << (ostream&, const Window&);
-		const Coordinate getWindowCoord();
+	const Coordinate getWindowCoord();
 
 private:
 	static int      omega;
 	Coordinate      windowCoord;
-		WindowsSet*     _windowSet;
+	WindowsSet*     _windowSet;
 	vector<Group*>  innerGroup;
 	vector<Group*>  crossGroup; // 
 	pair<int,int>   idx;
@@ -173,7 +173,7 @@ private:
 	vector<Group*>  _crossGroup;
 	size_t          _groupNum;
 	size_t          _sim;
-	double        _densityDiffSum;
+	double          _densityDiffSum;
 
 	void addWindow(Window*);
 	void addCrossGroup(Group*);

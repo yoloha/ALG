@@ -222,7 +222,7 @@ WindowsSet::calWinDensityDiffSum()
 	for (int i = 0, l = _windows.size(); i < l; i++) {
 		_windows[i] -> densityA = 0;
 		_windows[i] -> densityB = 0;
-		for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; n++) {
+		for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; j++) {
 			if (_windows[i] -> innerGroup[j] -> getColor()) {
 				_windows[i] -> densityA += _windows[i] -> innerGroup[j] -> areaA();
 				_windows[i] -> densityB += _windows[i] -> innerGroup[j] -> areaB();
@@ -293,5 +293,6 @@ ostream& operator <<(ostream& os,const WindowsSet& w)
 	os<<"crossGroup Number : "<<w._crossGroup.size()<<endl;
 	os<<"Simulate Value "<< bitset<64>(w._sim)<<endl;
 	os<<"Total Group Number : "<<w._groupNum;
+    return os;
 }
 /********************* WindowsSet *************************/
