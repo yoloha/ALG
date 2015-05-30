@@ -37,8 +37,8 @@ int main(int argc, char const *argv[])
 	//cout <<"system time: " << stat.sTime / 1000000.0 << "s" << endl; // print period systemtime in seconds
 	//cout <<"user+system time:" << (stat.uTime + stat.sTime) / 1000000.0 << "s" << endl; 
 
+	Bbox.buildWindowsSet();
 	Bbox.calWindowDensity(); // for debug
-//	Bbox.buildWindowsSet();
 	
 	if (argc == 3) {
 		ofstream outfile(argv[2], ios::out);

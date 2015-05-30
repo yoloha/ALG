@@ -348,12 +348,12 @@ BoundingBox::buildWindowsSet()
 		if (sets[i] -> _windows.empty()) delete sets[i];
 		else {
 			_windowsSet.push_back(sets[i]);
-			sets[i] -> calWinDensityDiffSum(); 
+			//sets[i] -> calWinDensityDiffSum(); 
 		}
 	}
 
     for (int i = 0, l = _windowsSet.size(); i < l; i++)
-        _windowsSet[i] -> buildAreaMatrix();
+        _windowsSet[i] -> initialize();
 }
 
 void BoundingBox::printInfo(ostream& os)
@@ -370,7 +370,8 @@ void BoundingBox::printInfo(ostream& os)
 			os<<_windows[i][j];
 	}
 	for (size_t i = 0 ; i <_windowsSet.size();++i){
-		os<<*_windowsSet[i]<<endl;
+		os << "* WindowsSet Id    : " << i + 1 << endl
+		   << *_windowsSet[i] << endl;
 	}
 	os<<"---------------------------------------------------------"<<endl;
 }

@@ -156,7 +156,7 @@ Window::getWindowCoord()
 
 /********************* WindowsSet *************************/
 	
-WindowsSet::WindowsSet(Window* w) :  _sim(0), _densityDiffSum(-1)
+WindowsSet::WindowsSet(Window* w) :  _densityDiffSum(-1)
 {
 	_windows.push_back(w);
 	_groupNum = w -> innerGroup.size();
@@ -176,6 +176,14 @@ WindowsSet::addCrossGroup(Group* g)
 	_groupNum++;
 }
     
+void
+WindowsSet::initialize()
+{
+    buildAreaMatrix();
+    initSim();
+    calWinDensity(); //
+}
+
 void 
 WindowsSet::buildAreaMatrix()
 {
@@ -199,31 +207,40 @@ WindowsSet::buildAreaMatrix()
     }
 }
 
-void 
-WindowsSet::simulate(const size_t& sim) 
+void
+WindowsSet::initSim()
 {
-	if (sim == _sim) return;
+    int n = _groupNum / SIMLEN + 1;
+    _sim.resize(n, 0);
+}
+
+void 
+//WindowsSet::simulate(const size_t& sim) 
+WindowsSet::simulate(const vector<size_t>& sim) 
+{
+	//if (sim == _sim) return;
 
     GrpAreaInWin totalArea;
     totalArea.resize(_groupNum, 0);
 
-    size_t simTmp = sim;
+    //size_t simTmp = sim;
     for (int i = 0, l = _areaMatrix.size(); i < l ; i++) {
-        if (simTmp % 2) {
-            for (size_t j = 0; j < _groupNum; j++)
+        //if (simTmp % 2) {
+        if (grpColorInSim(sim, i)) {
+            for (int j = 0; j < _groupNum; j++)
                 totalArea[j] += _areaMatrix[i][j];
         }
         else {
-            for (size_t j = 0; j < _groupNum; j++)
+            for (int j = 0; j < _groupNum; j++)
                 totalArea[j] -= _areaMatrix[i][j];
         }
-        simTmp /=2;
+        //simTmp /=2;
     }
 
     double densityDiffSum = 0;
     for (int i = 0, l = totalArea.size(); i < l; i++)
         densityDiffSum += abs(totalArea[i]);
-	densityDiffSum /= (Window::omega * Window::omega) * 100; 
+	densityDiffSum /= (Window::omega * Window::omega) / 100; 
 
 	if (_densityDiffSum == -1) return;
 
@@ -231,6 +248,7 @@ WindowsSet::simulate(const size_t& sim)
         _sim = sim;
         _densityDiffSum = densityDiffSum;
         // reset group's color
+        // updateWinDensity();
     }
 
     /*
@@ -262,15 +280,26 @@ WindowsSet::simulate(const size_t& sim)
 	}
     */
 }
-	
-bool 
-WindowsSet::calWinDensityDiffSum()
+
+int
+WindowsSet::grpColorInSim(const vector<size_t>& sim, const int& grpPos)
 {
+    int i = grpPos / SIMLEN;
+    int p = grpPos % SIMLEN;
+    return (sim[i] >> p) % 2;
+}
+	
+void 
+//WindowsSet::calWinDensityDiffSum()
+WindowsSet::calWinDensity()
+{
+    /*
 	vector<double> densityA, densityB;
 	for (int i = 0, l = _windows.size(); i < l; i++) {
 		densityA.push_back(_windows[i] -> densityA);
 		densityB.push_back(_windows[i] -> densityB);
 	}
+    */
 
 	for (int i = 0, l = _windows.size(); i < l; i++) {
 		_windows[i] -> densityA = 0;
@@ -321,15 +350,16 @@ WindowsSet::calWinDensityDiffSum()
 		}
 	}
 
-	double densityDiffSum = 0;
+	//double densityDiffSum = 0;
 	for (int i = 0, l = _windows.size(); i < l; i++) {
-		_windows[i] -> densityA /= (Window::omega * Window::omega) * 100; 
-		_windows[i] -> densityB /= (Window::omega * Window::omega) * 100; 
-		densityDiffSum += abs(_windows[i] -> densityA - _windows[i] -> densityB);
+		_windows[i] -> densityA /= (Window::omega * Window::omega) / 100; 
+		_windows[i] -> densityB /= (Window::omega * Window::omega) / 100; 
+		//ensityDiffSum += abs(_windows[i] -> densityA - _windows[i] -> densityB);
 	}
 
-	if (_densityDiffSum == -1) return true; 
+	//if (_densityDiffSum == -1) return true; 
 
+    /*
 	if (densityDiffSum < _densityDiffSum) return true;
 	else {
 		for (int i = 0, l = _windows.size(); i < l; i++) {
@@ -338,14 +368,33 @@ WindowsSet::calWinDensityDiffSum()
 		}
 		return false;
 	}
+    */
+}
+
+void
+WindowsSet::updateWinDensity()
+{
+    int cnt = 0;
+	for (int i = 0, l = _windows.size(); i < l; i++) {
+		for (int j = 0, n = _windows[i] -> innerGroup.size(); j < n; j++, cnt++)
+			_windows[i] -> innerGroup[j] -> setColor(grpColorInSim(_sim, cnt));
+	}
+	for (int i = 0, l = _crossGroup.size(); i < l; i++, cnt++)
+		_crossGroup[i] -> setColor(grpColorInSim(_sim, cnt));
+
+    calWinDensity();
 }
 	
 ostream& operator <<(ostream& os,const WindowsSet& w)
 {
-	os<<"Window Number: "<<w._windows.size()<<endl;
-	os<<"crossGroup Number : "<<w._crossGroup.size()<<endl;
-	os<<"Simulate Value "<< bitset<64>(w._sim)<<endl;
-	os<<"Total Group Number : "<<w._groupNum;
+    os << "Window Number      : " << w._windows.size() << endl
+       << "crossGroup Number  : " << w._crossGroup.size() << endl
+       << "Simulate Value     : "; 
+    int n = w._groupNum / SIMLEN + 1;
+    for (int i = 0; i < n; i++)
+        os << bitset<SIMLEN>(w._sim[i]);
+    os << endl
+       << "Total Group Number : " << w._groupNum;
     return os;
 }
 /********************* WindowsSet *************************/

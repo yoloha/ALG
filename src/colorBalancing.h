@@ -7,6 +7,9 @@
 
 using namespace std;
 
+#define SIZE_T sizeof(size_t)
+#define SIMLEN (SIZE_T * 8)
+
 class Block;
 class Group;
 class Grid;
@@ -160,11 +163,13 @@ class WindowsSet
 friend class BoundingBox;
 
 public:
-	WindowsSet() : _groupNum(0), _sim(0), _densityDiffSum(-1) {}
+	//WindowsSet() : _groupNum(0), _sim(0), _densityDiffSum(-1) {}
+	WindowsSet() : _groupNum(0), _densityDiffSum(-1) {}
 	WindowsSet(Window*);
 	~WindowsSet() {}
 
-	void simulate(const size_t&);
+	//void simulate(const size_t&);
+	void simulate(const vector<size_t>&);
 	void randSim(int max_time);
 	void linearSolve();
 	friend ostream& operator <<(ostream& ,const WindowsSet&);
@@ -172,16 +177,22 @@ public:
 private:
 	vector<Window*>         _windows;
 	vector<Group*>          _crossGroup;
-    vector<GrpAreaInWin>    _areaMatrix;
-	size_t                  _groupNum;
-	size_t                  _sim;
+	vector<GrpAreaInWin>    _areaMatrix;
+	int                     _groupNum;
+	//size_t                  _sim;
+	vector<size_t>          _sim;
 	double                  _densityDiffSum;
 
 	void addWindow(Window*);
 	void addCrossGroup(Group*);
-    void buildAreaMatrix();
+	void initialize();
+	void buildAreaMatrix();
+	void initSim();
 
-	bool calWinDensityDiffSum();
+	int  grpColorInSim(const vector<size_t>&, const int&);
+	//bool calWinDensityDiffSum();
+	void calWinDensity();
+	void updateWinDensity();
 };
 
 #endif

@@ -14,7 +14,7 @@ RandomNumGen rnGen(0);
 void  WindowsSet::randSim(int max_time)
 {
 	while(max_time>0){
-		simulate(rnGen(MASK(63)));
+		//simulate(rnGen(MASK(63)));
 		--max_time;
 	}
 }
