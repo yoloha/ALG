@@ -17,7 +17,7 @@ class RandomNumGen
 			return my_random()%range;
 		else{
 			size_t temp1 = my_random(),temp2=my_random(),temp3=my_random()%2;
-			return (temp1<<33)^(temp2<<2)^temp3;
+			return ((temp1<<33)^(temp2<<2)^temp3)%range;
 		}
 	  }
 };
