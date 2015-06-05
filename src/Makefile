@@ -21,7 +21,7 @@ boundingBox_private.o : boundingBox_private.cpp colorBalancing.h
 colorBalancing.o : colorBalancing.cpp colorBalancing.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
-optimize.o : optimize.cpp colorBalancing.h ../lib/rnGen.h
+optimize.o : optimize.cpp linear_optimize.h colorBalancing.h ../lib/rnGen.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 clean :
