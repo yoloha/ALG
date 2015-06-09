@@ -409,6 +409,13 @@ void BoundingBox::output(ostream& os)
 			os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
 	}
 }
+
+void BoundingBox::opt()
+{
+	for(size_t i = 0 ; i <_windowsSet.size() ; ++i)
+		_windowsSet[i]->linearSolve();
+		//_windowsSet[i]->directSim();
+}
 //}}} BoundingBox
 
 Coordinate parseBlock(string _coordstr)

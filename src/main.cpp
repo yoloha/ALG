@@ -39,6 +39,7 @@ int main(int argc, char const *argv[])
 
 	Bbox.buildWindowsSet();
 	Bbox.calWindowDensity(); // for debug
+	Bbox.opt();
 	
 	if (argc == 3) {
 		ofstream outfile(argv[2], ios::out);

@@ -1,0 +1,682 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"vec",
+				"vecOneNorm"
+			],
+			[
+				"min",
+				"minNorm"
+			],
+			[
+				"pr",
+				"printVector"
+			],
+			[
+				"siz",
+				"size"
+			],
+			[
+				"print",
+				"printVector"
+			],
+			[
+				"prin",
+				"printMatrix"
+			],
+			[
+				"a",
+				"area"
+			],
+			[
+				"si",
+				"size"
+			],
+			[
+				"_",
+				"_areaMatrix"
+			],
+			[
+				"be",
+				"begin"
+			],
+			[
+				"in",
+				"index"
+			],
+			[
+				"G",
+				"GMap"
+			],
+			[
+				"s",
+				"simulate"
+			],
+			[
+				"B",
+				"BoundingBox"
+			],
+			[
+				"gr",
+				"groupNum"
+			],
+			[
+				"ve",
+				"vecOneNorm"
+			],
+			[
+				"n",
+				"norm"
+			],
+			[
+				"sim",
+				"simVal"
+			],
+			[
+				"Win",
+				"WindowsSet"
+			],
+			[
+				"Sim",
+				"simulate"
+			],
+			[
+				"c",
+				"colorBalancing"
+			],
+			[
+				"ma",
+				"max_times"
+			],
+			[
+				"R",
+				"RandomNumGen"
+			],
+			[
+				"r",
+				"range"
+			],
+			[
+				"ret",
+				"return"
+			],
+			[
+				"to",
+				"toggling"
+			],
+			[
+				"A",
+				"A"
+			],
+			[
+				"Re",
+				"starRecording"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"toggl",
+				"toggling"
+			],
+			[
+				"re",
+				"relay"
+			],
+			[
+				"U",
+				"UIDDataBase"
+			],
+			[
+				"mode",
+				"modules"
+			],
+			[
+				"de",
+				"debugFlag"
+			],
+			[
+				"pt",
+				"pt"
+			],
+			[
+				"mpz",
+				"mpz_class"
+			],
+			[
+				"mp",
+				"mpz_mul"
+			],
+			[
+				"d",
+				"dInv"
+			],
+			[
+				"E",
+				"ECpoint"
+			],
+			[
+				"inc",
+				"include"
+			],
+			[
+				"y",
+				"y"
+			],
+			[
+				"bl",
+				"blocks"
+			],
+			[
+				"ad",
+				"adjBlocks"
+			],
+			[
+				"add",
+				"addBlockToGrid"
+			],
+			[
+				"x",
+				"x_left"
+			],
+			[
+				"_b",
+				"_block"
+			],
+			[
+				"x_",
+				"x_overlap"
+			],
+			[
+				"le",
+				"x_left"
+			],
+			[
+				"blo",
+				"blockCoord"
+			],
+			[
+				"grid",
+				"grid_y_size"
+			],
+			[
+				"size",
+				"size_t"
+			],
+			[
+				"al",
+				"alpha"
+			],
+			[
+				"b",
+				"blockCoord"
+			],
+			[
+				"sie",
+				"size_t"
+			],
+			[
+				"g",
+				"grid_y_size"
+			],
+			[
+				"y_",
+				"y_up"
+			],
+			[
+				"p",
+				"parseBlock"
+			],
+			[
+				"t",
+				"token"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "src/optimize.cpp",
+			"settings":
+			{
+				"buffer_size": 338,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/linear_optimize.h",
+			"settings":
+			{
+				"buffer_size": 3127,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/colorBalancing.h",
+			"settings":
+			{
+				"buffer_size": 4097,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main.cpp",
+			"settings":
+			{
+				"buffer_size": 1311,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/boundingBox.cpp",
+			"settings":
+			{
+				"buffer_size": 12688,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/colorBalancing.cpp",
+			"settings":
+			{
+				"buffer_size": 9738,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"p i ",
+				"Package Control: Install Package"
+			],
+			[
+				"p r",
+				"Package Control: Remove Package"
+			],
+			[
+				"p i",
+				"Package Control: Install Package"
+			],
+			[
+				"p r ",
+				"Package Control: Remove Package"
+			],
+			[
+				"pa r",
+				"Package Control: Remove Package"
+			],
+			[
+				"git ",
+				"Git: Status"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"pi",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: i",
+				"Package Control: Install Package"
+			],
+			[
+				"pa",
+				"Package Control: Install Package"
+			],
+			[
+				"pci",
+				"Package Control: Install Package"
+			],
+			[
+				"git init",
+				"Git: Init"
+			],
+			[
+				"ls",
+				"Sort Lines (Case Sensitive)"
+			],
+			[
+				"package control in",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 64.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/wnchen/桌面/test_req.js",
+		"/home/wnchen/桌面/ALG/src/colorBalancing.cpp",
+		"/home/wnchen/桌面/ALG/src/boundingBox.cpp",
+		"/home/wnchen/桌面/ALG/src/main.cpp",
+		"/home/wnchen/桌面/ALG/src/Makefile",
+		"/home/wnchen/桌面/ALG/lib/rnGen.h",
+		"/home/wnchen/桌面/ALG/src/boundingBox_private.cpp",
+		"/home/wnchen/桌面/ALG/src/optimize.cpp",
+		"/home/wnchen/桌面/ALG/src/colorBalancing.h",
+		"/home/wnchen/桌面/ALG/lib/Makefile",
+		"/home/wnchen/桌面/ALG/Makefile",
+		"/home/wnchen/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
+		"/home/wnchen/.config/sublime-text-2/Packages/User/Preferences.sublime-settings",
+		"/home/wnchen/桌面/ES_Lab3/rfid_relay_audio.js",
+		"/home/wnchen/桌面/ES_Lab3/tessel_relay.js",
+		"/home/wnchen/桌面/ES_Lab3/tessel_audio.js",
+		"/home/wnchen/桌面/ES_Lab3/tessel_rfid.js",
+		"/home/wnchen/.config/sublime-text-2/Packages/HTML-CSS-JS Prettify/HTMLPrettify.sublime-settings",
+		"/home/wnchen/桌面/Sublime Projects/ES_Lab3/tessel_relay.js",
+		"/home/wnchen/桌面/Sublime Projects/ES_Lab3/tessel_audio.js",
+		"/home/wnchen/桌面/Sublime Projects/ES_Lab3/tessel_rfid.js",
+		"/home/wnchen/桌面/ECC_project/src/main.cpp",
+		"/media/wnchen/DATA/103-1 Project/myDAA/src/util/util.h",
+		"/media/wnchen/DATA/103-1 Project/myDAA/src/util/myString.cpp",
+		"/media/wnchen/DATA/103-1 Project/myDAA/src/util/util.cpp",
+		"/home/wnchen/桌面/ECC_project/src/util.cpp",
+		"/home/wnchen/桌面/ECC_project/src/util.h",
+		"/media/wnchen/DATA/103-1 Project/DAA/src/src/TPM/TPM.cpp",
+		"/media/wnchen/DATA/103-1 Project/DAA/src/include/util.h",
+		"/home/wnchen/桌面/ECC_project/ECC.h",
+		"/home/wnchen/桌面/ma_20150513.v",
+		"/home/wnchen/project_1/project_1.srcs/sources_1/edk/system/pcores/aescore_v1_00_a/hdl/verilog/aes_256.v",
+		"/home/wnchen/.config/sublime-text-2/Packages/User/CTags.sublime-settings",
+		"/home/wnchen/桌面/Algorithm/Algorithm_final/src/colorBalancing.h",
+		"/home/wnchen/桌面/Algorithm/Algorithm_final/src/test",
+		"/home/wnchen/桌面/Algorithm/b01901018_pa3/src/graph.h",
+		"/home/wnchen/桌面/Algorithm/Algorithm_final/colorBalancing.h",
+		"/home/wnchen/桌面/Algorithm/Algorithm_final/colorBalancing.cpp",
+		"/home/wnchen/桌面/Algorithm/Algorithm_final/main.cpp",
+		"/home/wnchen/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
+		"/home/wnchen/.config/sublime-text-2/Packages/Default/Default (Linux).sublime-keymap"
+	],
+	"find":
+	{
+		"height": 36.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"opt",
+			"output",
+			"ostrea",
+			"down_idx",
+			"left_idx",
+			"checkAdj",
+			"\n"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "src/optimize.cpp",
+					"settings":
+					{
+						"buffer_size": 338,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								338,
+								338
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/linear_optimize.h",
+					"settings":
+					{
+						"buffer_size": 3127,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2135,
+								2135
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2349.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/colorBalancing.h",
+					"settings":
+					{
+						"buffer_size": 4097,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3427,
+								3427
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1958.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/main.cpp",
+					"settings":
+					{
+						"buffer_size": 1311,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1099,
+								1099
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 462.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/boundingBox.cpp",
+					"settings":
+					{
+						"buffer_size": 12688,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12254,
+								12254
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 8749.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/colorBalancing.cpp",
+					"settings":
+					{
+						"buffer_size": 9738,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 6006.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 34.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.git":
+	{
+		"height": 142.0
+	},
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 163.0,
+	"status_bar_visible": true
+}
