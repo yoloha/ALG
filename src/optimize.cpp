@@ -5,6 +5,7 @@
 #include <iomanip>
 #include "colorBalancing.h"
 #include "linear_optimize.h"
+#include "genetic_alg.h" 
 #include "rnGen.h"
 
 using namespace std;
@@ -59,3 +60,64 @@ void WindowsSet::directSim()
 		}
 	}
 }
+
+void WindowsSet::genSim()
+{
+	// if group number is small enough to implement brute force, should use directSim() instead
+	RandomNumGen rng(time(0));
+	int num=(_groupNum%64==0)? _groupNum/64 : _groupNum/64+1;
+	cout<<"*-----------------Calling Genetic simulation-----------------*"<<endl;
+	cout<<"using "<<num<<" size_t numbers for each genetic simulation"<<endl;
+	// alpha genes
+	vector<size_t> F;
+	vector<size_t> M;
+	for(int i=0;i<num;i++){
+		F.push_back(rng(MAX));
+		M.push_back(rng(MAX));
+	}
+	/*
+	cout<<"father: "<<endl;
+	printGene(F,_groupNum);
+	if(simulate(F))cout<<"father updated"<<endl;
+	cout<<"mother: "<<endl;
+	printGene(M,_groupNum);
+	if(simulate(M))cout<<"mother updated"<<endl;
+	*/
+	int generation_limit=50;
+	for(int gen=0;gen<generation_limit;gen++){
+		for(int off=0;off<5;off++){
+			RandomNumGen rngtime(time(0)+gen+off);
+			vector<size_t> C = evolution(F,M,_groupNum,rngtime);
+			//for(int i=0;i<num;i++)
+			//	cout<<"child "<<C[i]<<endl;
+			if(simulate(C)){
+				cout<<"child updated at generation = "<<gen<<"    offspring = "<<off<<endl;
+				generation_limit += gen;
+				if(rng(2)){
+					cout<<"child replaces father"<<endl;
+					F=C;
+				}
+				else{
+					cout<<"child replaces mother"<<endl;
+					M=C;
+				}
+			}
+		}
+		vector<size_t> S;
+		for(int i=0;i<num;i++)
+			S.push_back(rng(MAX));
+		if(simulate(S)){
+			cout<<"stranger updated at generation = "<<gen<<endl;
+			generation_limit += gen;
+			if(rng(2)){
+				cout<<"stranger replaces father"<<endl;
+				F=S;
+			}
+			else{
+				cout<<"stranger replaces mother"<<endl;
+				M=S;
+			}
+		}
+	}
+}
+

@@ -54,6 +54,7 @@ bool BoundingBox::readBlock(istream & is)
 		return false;
 	}
 	istringstream(word.substr(6))>>omega;
+	Window::omega = omega;
 	getline(is,line);
 	while(getline(is,line)){
 		Coordinate temp = parseBlock(line);
@@ -416,6 +417,16 @@ void BoundingBox::opt()
 		_windowsSet[i]->linearSolve();
 		//_windowsSet[i]->directSim();
 }
+
+void BoundingBox::gen()
+{
+	for(size_t i = 0 ; i <_windowsSet.size() ; ++i){
+		cout<<"#################################  Window "<<i<<"  #####################################"<<endl;
+		_windowsSet[i]->genSim();
+		cout<<"###################################################################################"<<endl;
+	}
+}
+
 //}}} BoundingBox
 
 Coordinate parseBlock(string _coordstr)

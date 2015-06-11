@@ -40,6 +40,7 @@ int main(int argc, char const *argv[])
 	Bbox.buildWindowsSet();
 	Bbox.calWindowDensity(); // for debug
 	Bbox.opt();
+	//Bbox.gen();
 	
 	if (argc == 3) {
 		ofstream outfile(argv[2], ios::out);
@@ -47,8 +48,8 @@ int main(int argc, char const *argv[])
 		Bbox.output(outfile);
 	}
 	else {
-		Bbox.printInfo(cout);
-		Bbox.output(cout);
+		//Bbox.printInfo(cout);
+		//Bbox.output(cout);
 	}
 
 	return 0;

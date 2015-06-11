@@ -38,6 +38,7 @@ public:
 	void calWindowDensity();
 	void buildWindowsSet();
 	void opt();
+	void gen();
 	void printInfo(ostream &);
 	void output(ostream &);
 	
@@ -170,10 +171,11 @@ public:
 	~WindowsSet() {}
 
 	//void simulate(const size_t&);
-	void simulate(const vector<size_t>&);
+	bool simulate(const vector<size_t>&);
 	void randSim(int max_time);
 	void linearSolve();
 	void directSim();
+	void genSim();
 	friend ostream& operator <<(ostream& ,const WindowsSet&);
 
 private:

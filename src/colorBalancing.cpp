@@ -137,8 +137,7 @@ Window::Window(Coordinate _coord)
 
 Window::~Window() {}
 
-int
-Window::omega = 0;
+int Window::omega = 0;
 
 ostream& operator << (ostream& os, const Window& w)
 {
@@ -214,7 +213,7 @@ WindowsSet::initSim()
     _sim.resize(n, 0);
 }
 
-void 
+bool
 //WindowsSet::simulate(const size_t& sim) 
 WindowsSet::simulate(const vector<size_t>& sim) 
 {
@@ -242,15 +241,17 @@ WindowsSet::simulate(const vector<size_t>& sim)
         densityDiffSum += abs(totalArea[i]);
 	densityDiffSum /= (Window::omega * Window::omega) / 100; 
 
-	if (_densityDiffSum == -1) return;
-
-    if (densityDiffSum < _densityDiffSum) {
+    if ((densityDiffSum < _densityDiffSum) || (_densityDiffSum == -1)) {
         _sim = sim;
         _densityDiffSum = densityDiffSum;
+        cout<<"densityDiffSum = "<<densityDiffSum<<endl;
+		cout<<"_densityDiffSum = "<<_densityDiffSum<<endl;
         // reset group's color
         // updateWinDensity();
+        return true;
     }
-
+    else
+    	return false;
     /*
 	size_t simTmp = sim;
 	for (int i = 0, l = _windows.size(); i < l; i++) {
