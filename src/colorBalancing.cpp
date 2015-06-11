@@ -244,8 +244,7 @@ WindowsSet::simulate(const vector<size_t>& sim)
     if ((densityDiffSum < _densityDiffSum) || (_densityDiffSum == -1)) {
         _sim = sim;
         _densityDiffSum = densityDiffSum;
-        cout<<"densityDiffSum = "<<densityDiffSum<<endl;
-		cout<<"_densityDiffSum = "<<_densityDiffSum<<endl;
+		cout<<"updated _densityDiffSum = "<<_densityDiffSum<<endl;
         // reset group's color
         // updateWinDensity();
         return true;
