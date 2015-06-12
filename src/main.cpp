@@ -2,8 +2,10 @@
 #include <fstream>
 #include "colorBalancing.h"
 #include "optMethod.h"
+#include "tm_usage.h"
 
 using namespace std;
+using namespace CommonNs;
 
 void help_message();
 
@@ -14,9 +16,9 @@ int main(int argc, char const *argv[])
 	   return 0;
 	}
 
-	//TmUsage tmusg;
-	//TmStat stat;
-	//tmusg.totalStart();
+	TmUsage tmusg;
+	TmStat stat;
+	tmusg.totalStart();
 
 	BoundingBox Bbox;
 
@@ -27,20 +29,16 @@ int main(int argc, char const *argv[])
 	}
 	Bbox.readBlock(dofile);
 
-	//tmusg.periodStart();
+	tmusg.periodStart();
+
 	Bbox.buildGroup(CHECKALL_METHOD);
-	//tmusg.getPeriodUsage(stat);
-	
 	Bbox.buildWindow();
-
-	//cout <<"user time: " << stat.uTime / 1000000.0 << "s" << endl; // print period user time in seconds
-	//cout <<"system time: " << stat.sTime / 1000000.0 << "s" << endl; // print period systemtime in seconds
-	//cout <<"user+system time:" << (stat.uTime + stat.sTime) / 1000000.0 << "s" << endl; 
-
 	Bbox.buildWindowsSet();
-	Bbox.calWindowDensity(); // for debug
 	Bbox.opt();
-	//Bbox.gen();
+
+	tmusg.getPeriodUsage(stat);
+
+
 	
 	if (argc == 3) {
 		ofstream outfile(argv[2], ios::out);
@@ -48,10 +46,14 @@ int main(int argc, char const *argv[])
 		Bbox.output(outfile);
 	}
 	else {
-		//Bbox.printInfo(cout);
-		//Bbox.output(cout);
+		Bbox.printInfo(cout);
+		Bbox.output(cout);
 	}
 
+	cout <<"user time: " << stat.uTime / 1000000.0 << "s" << endl; // print period user time in seconds
+	cout <<"system time: " << stat.sTime / 1000000.0 << "s" << endl; // print period systemtime in seconds
+	cout <<"user+system time:" << (stat.uTime + stat.sTime) / 1000000.0 << "s" << endl; 
+	
 	return 0;
 }
 

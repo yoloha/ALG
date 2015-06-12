@@ -4,7 +4,6 @@
 #include <cmath>
 #include <iomanip>
 #include "colorBalancing.h"
-#include "linear_optimize.h"
 #include "genetic_alg.h" 
 #include "rnGen.h"
 
@@ -14,7 +13,7 @@ using namespace std;
 
 RandomNumGen rnGen(0);
 
-size_t BruteForceSim(vector<vector<int> >& );
+bool optimalSim(vector<size_t>&, vector<vector<int> >&);
 int vecOneNorm(const vector<int> &);
 void printMatrix(ostream &, const vector<vector<int > >);
 
@@ -28,25 +27,32 @@ void  WindowsSet::randSim(int max_time)
 
 void WindowsSet::linearSolve()
 {
-	if(_groupNum<=30){
+	if(_groupNum<10){
 		//transpose
 		vector<int> tmp(_areaMatrix.size(),0);
 		vector<vector<int> >G(_areaMatrix[0].size(),tmp);
 		for(size_t i = 0 ; i < _areaMatrix.size() ; ++i){
-			for(int j = 0 ; j < _groupNum; ++j){
-				//cout<<_areaMatrix[i][j]<<endl;
+			for(int j = 0 ; j < _groupNum; ++j)
 				G[j][i] = _areaMatrix[i][j];
-			}
-			//cout<<endl;
 		}
-		//print G
-		
-
 		//solving
 		cout<<"Solving WindowsSet ..."<<endl;
-		_sim[0] = BruteForceSim(G);
-		//cout<<"G size"<<G.size()<<endl;
+		cout<<optimalSim(_sim,G);
 	}
+	else{
+		size_t max_time = MASK(17);
+		while(max_time > 1){
+			vector<size_t> temp(3,0);
+			temp[0] = rnGen(MASK(63));
+			temp[1] = rnGen(MASK(63));
+			temp[2] = rnGen(MASK(63));
+			simulate(temp);
+			--max_time;
+			//if(max_time < 1000) cout<<max_time;
+		}
+	}
+	
+	updateWinDensity();
 }
 
 void WindowsSet::directSim()

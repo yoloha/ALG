@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <limits>
+#include <cmath>
 
 using namespace std;
 
@@ -386,6 +387,7 @@ void BoundingBox::output(ostream& os)
 {
 	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
 	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	double density = 0;
 	for(int i=0;i<ymax_w;i++){
 		for(int j=0;j<xmax_w;j++){
 			os << "WIN[" << i * xmax_w + j + 1 << "]=" 
@@ -395,6 +397,7 @@ void BoundingBox::output(ostream& os)
 			   << _windows[j][i].windowCoord.y_up << "("
 			   << setprecision(2) << fixed << _windows[j][i].densityA << " "
 			   << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;
+			density+=abs(_windows[j][i].densityA - _windows[j][i].densityB);
 		}
 	}
 	for(size_t i=0;i<_NOgroup.size();i++){
@@ -409,6 +412,7 @@ void BoundingBox::output(ostream& os)
 		for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++)
 			os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
 	}
+	os<<"TOTAL DENSITY : "<<density<<endl;
 }
 
 void BoundingBox::opt()
