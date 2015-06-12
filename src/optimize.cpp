@@ -27,7 +27,7 @@ void  WindowsSet::randSim(int max_time)
 
 void WindowsSet::linearSolve()
 {
-	if(_groupNum<10){
+	if(_groupNum<70){
 		//transpose
 		vector<int> tmp(_areaMatrix.size(),0);
 		vector<vector<int> >G(_areaMatrix[0].size(),tmp);
@@ -36,11 +36,11 @@ void WindowsSet::linearSolve()
 				G[j][i] = _areaMatrix[i][j];
 		}
 		//solving
-		cout<<"Solving WindowsSet ..."<<endl;
+		cout<<"Solving WindowsSet ..."<<endl<<endl;
 		cout<<optimalSim(_sim,G);
 	}
 	else{
-		size_t max_time = MASK(17);
+		size_t max_time = MASK(20);
 		while(max_time > 1){
 			vector<size_t> temp(3,0);
 			temp[0] = rnGen(MASK(63));

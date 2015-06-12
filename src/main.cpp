@@ -42,12 +42,12 @@ int main(int argc, char const *argv[])
 	
 	if (argc == 3) {
 		ofstream outfile(argv[2], ios::out);
-		Bbox.printInfo(outfile);
+		//Bbox.printInfo(outfile);
 		Bbox.output(outfile);
 	}
 	else {
 		Bbox.printInfo(cout);
-		Bbox.output(cout);
+		//Bbox.output(cout);
 	}
 
 	cout <<"user time: " << stat.uTime / 1000000.0 << "s" << endl; // print period user time in seconds

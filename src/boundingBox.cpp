@@ -366,28 +366,25 @@ BoundingBox::buildWindowsSet()
 void BoundingBox::printInfo(ostream& os)
 {
 	os<<"------------------------DEBUG INFO-----------------------"<<endl;
+	os<<"Parameter : "<<endl;
 	os<<"ALPHA : "<<alpha<<endl;
 	os<<"BETA : "<<beta<<endl;
 	os<<"OMEGA : "<<omega<<endl;
-	os<<"Boundary : "<<Block(Bbox_coord)<<endl;
+	os<<"Boundary : "<<Block(Bbox_coord)<<endl<<endl;
+	
 	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
 	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
-	for (int i = 0 ; i < xmax_w ; ++i){
+	/*for (int i = 0 ; i < xmax_w ; ++i){
 		for(int j = 0 ; j < ymax_w ; ++j)
 			os<<_windows[i][j];
-	}
+	}*/
 	for (size_t i = 0 ; i <_windowsSet.size();++i){
 		os << "* WindowsSet Id    : " << i + 1 << endl
-		   << *_windowsSet[i] << endl;
+		   << *_windowsSet[i] << endl<<endl;
 	}
-	os<<"---------------------------------------------------------"<<endl;
-}
-
-void BoundingBox::output(ostream& os)
-{
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	
 	double density = 0;
+
 	for(int i=0;i<ymax_w;i++){
 		for(int j=0;j<xmax_w;j++){
 			os << "WIN[" << i * xmax_w + j + 1 << "]=" 
@@ -398,6 +395,27 @@ void BoundingBox::output(ostream& os)
 			   << setprecision(2) << fixed << _windows[j][i].densityA << " "
 			   << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;
 			density+=abs(_windows[j][i].densityA - _windows[j][i].densityB);
+		}
+	}
+	os<<endl;
+	os<<"TOTAL DENSITY : "<<density<<endl;
+	os<<"---------------------------------------------------------"<<endl;
+}
+
+void BoundingBox::output(ostream& os)
+{
+	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
+	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	
+	for(int i=0;i<ymax_w;i++){
+		for(int j=0;j<xmax_w;j++){
+			os << "WIN[" << i * xmax_w + j + 1 << "]=" 
+			   << _windows[j][i].windowCoord.x_left << ","
+			   << _windows[j][i].windowCoord.y_down << ","
+			   << _windows[j][i].windowCoord.x_right << ","
+			   << _windows[j][i].windowCoord.y_up << "("
+			   << setprecision(2) << fixed << _windows[j][i].densityA << " "
+			   << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;
 		}
 	}
 	for(size_t i=0;i<_NOgroup.size();i++){
@@ -411,8 +429,7 @@ void BoundingBox::output(ostream& os)
 			os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
 		for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++)
 			os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
-	}
-	os<<"TOTAL DENSITY : "<<density<<endl;
+	}	
 }
 
 void BoundingBox::opt()

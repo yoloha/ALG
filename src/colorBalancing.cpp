@@ -355,7 +355,8 @@ ostream& operator <<(ostream& os,const WindowsSet& w)
 	for (int i = 0; i < n; i++)
 		os << bitset<SIMLEN>(w._sim[i]);
 	os << endl
-	   << "Total Group Number : " << w._groupNum;
+	   << "Total Group Number : " << w._groupNum<<endl;
+	os<<"Density Difference : "<<w._densityDiffSum;
 	return os;
 }
 /********************* WindowsSet *************************/
