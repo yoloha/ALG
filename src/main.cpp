@@ -34,8 +34,19 @@ int main(int argc, char const *argv[])
 	Bbox.buildGroup(CHECKALL_METHOD);
 	Bbox.buildWindow();
 	Bbox.buildWindowsSet();
-	Bbox.opt();
-
+	//Bbox.opt();
+	// case 1: 
+	// case 2: 
+	// case 3: 
+	// case 4: 
+	// case 5: 
+	
+	Bbox.gen();
+	// case 1: 14.57
+	// case 2: 6.09
+	// case 3:*82.60
+	// case 4: 1.85
+	// case 5:*2.09
 	tmusg.getPeriodUsage(stat);
 
 

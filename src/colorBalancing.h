@@ -171,7 +171,7 @@ public:
 	~WindowsSet() {}
 
 	//void simulate(const size_t&);
-	bool simulate(const vector<size_t>&);
+	double simulate(const vector<size_t>&);
 	void randSim(int max_time);
 	void linearSolve();
 	void directSim();

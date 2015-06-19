@@ -215,10 +215,78 @@ WindowsSet::initSim()
 	_sim.resize(n, 0);
 }
 
-bool 
+double 
 //WindowsSet::simulate(const size_t& sim) 
 WindowsSet::simulate(const vector<size_t>& sim) 
 {
+	//----------------------------------------------------------------------------------------
+	//    Uses the same method as calWinDensity                                              |
+	//----------------------------------------------------------------------------------------
+	double densityDiffSum = 0;
+	int index=0;
+	WindowsSet cpy = *this;
+	for (int i = 0, l = cpy._windows.size(); i < l; i++) {
+		cpy._windows[i] -> densityA = 0;
+		cpy._windows[i] -> densityB = 0;
+		for (int j = 0, n = cpy._windows[i] -> innerGroup.size(); j < n; j++,index++) {
+			if (grpColorInSim(sim, index)) {
+				cpy._windows[i] -> densityA += cpy._windows[i] -> innerGroup[j] -> areaA();
+				cpy._windows[i] -> densityB += cpy._windows[i] -> innerGroup[j] -> areaB();
+			}
+			else {
+				cpy._windows[i] -> densityA += _windows[i] -> innerGroup[j] -> areaB();
+				cpy._windows[i] -> densityB += _windows[i] -> innerGroup[j] -> areaA();
+			}
+		}
+	}
+	for (int i = 0, l = cpy._crossGroup.size(); i < l; i++,index++) {
+		if (grpColorInSim(sim, index)) {
+			for (int j = 0, m = cpy._crossGroup[i] -> getBlocksANum(); j < m; j++) {
+				Block* block = cpy._crossGroup[i] -> getBlocksA(j);
+				for (int k = 0, n = block -> crossWindowsNum(); k < n; k++) {
+					Window* win = block -> getWindow(k); 
+					win -> densityA += block -> area(win -> windowCoord);
+				}
+			}
+			for (int j = 0, m = cpy._crossGroup[i] -> getBlocksBNum(); j < m; j++) {
+				Block* block = cpy._crossGroup[i] -> getBlocksB(j);
+				for (int k = 0, n = block -> crossWindowsNum(); k < n; k++) {
+					Window* win = block -> getWindow(k); 
+					win -> densityB += block -> area(win -> windowCoord);
+				}
+			}
+		}
+		else {
+			for (int j = 0, m = cpy._crossGroup[i] -> getBlocksANum(); j < m; j++) {
+				Block* block = cpy._crossGroup[i] -> getBlocksA(j);
+				for (int k = 0, n = block -> crossWindowsNum(); k < n; k++) {
+					Window* win = block -> getWindow(k); 
+					win -> densityB += block -> area(win -> windowCoord);
+				}
+			}
+			for (int j = 0, m = cpy._crossGroup[i] -> getBlocksBNum(); j < m; j++) {
+				Block* block = cpy._crossGroup[i] -> getBlocksB(j);
+				for (int k = 0, n = block -> crossWindowsNum(); k < n; k++) {
+					Window* win = block -> getWindow(k); 
+					win -> densityA += block -> area(win -> windowCoord);
+				}
+			}
+		}
+	}
+	for (int i = 0, l = cpy._windows.size(); i < l; i++) {
+		cpy._windows[i] -> densityA /= (Window::omega * Window::omega) / 100; 
+		cpy._windows[i] -> densityB /= (Window::omega * Window::omega) / 100; 
+		densityDiffSum +=abs(_windows[i] ->densityA- _windows[i] ->densityB);
+	}
+	if (densityDiffSum < _densityDiffSum) {
+		_sim = sim;
+		_densityDiffSum = densityDiffSum;
+	}
+	return densityDiffSum;
+	/*
+	//----------------------------------------------------------------------------------------
+	//    Uses Area matrix (current version have some problem)                               |
+	//----------------------------------------------------------------------------------------
 	//if (sim == _sim) return;
 	GrpAreaInWin totalArea;
 	totalArea.resize(_areaMatrix.size(),0);
@@ -240,15 +308,15 @@ WindowsSet::simulate(const vector<size_t>& sim)
 
 	densityDiffSum /= (Window::omega * Window::omega) / 100; 
 
-
-	//if (_densityDiffSum == -1) return;
-
 	if (densityDiffSum < _densityDiffSum) {
 		_sim = sim;
 		_densityDiffSum = densityDiffSum;
-		return true;
+		//return true;
 	}
-	return false;
+	//return false;
+	return densityDiffSum;
+	
+	*/
 }
 
 int
