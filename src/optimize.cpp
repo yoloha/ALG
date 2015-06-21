@@ -6,6 +6,7 @@
 #include "colorBalancing.h"
 #include "genetic_alg.h" 
 #include "rnGen.h"
+#include "timer.h"
 
 using namespace std;
 #define MASK(i)  (size_t (1)<<(i))
@@ -22,6 +23,14 @@ void  WindowsSet::randSim(int max_time)
 	while(max_time>0){
 		//simulate(rnGen(MASK(63)));
 		--max_time;
+
+		static int count=0;
+		count++;
+		if (count%check_interval==0){
+			checkTimeLeft();
+			if (interrupt==true)
+				break;
+		}
 	}
 }
 
@@ -49,6 +58,19 @@ void WindowsSet::linearSolve()
 			simulate(temp);
 			--max_time;
 			//if(max_time < 1000) cout<<max_time;
+			static bool start=true;
+			static bool check=true;
+			if (check==true){
+				check = checkTimeElapsed(start);
+				start=false;
+			}
+			static int count=0;
+			count++;
+			if (count%check_interval==0){
+				checkTimeLeft();
+				if (interrupt==true)
+					break;
+			}
 		}
 	}
 	
@@ -64,6 +86,12 @@ void WindowsSet::directSim()
 			vector<size_t> temp;
 			temp.push_back(i);
 			simulate(temp);
+
+			if (i%check_interval==0){
+				checkTimeLeft();
+				if (interrupt==true)
+					break;
+			}
 		}
 	}
 }
@@ -146,6 +174,21 @@ void WindowsSet::genSim()
 		}
 		cout<<"(F,M) = ( "<<setw(8)<<F_record<<" , "<<setw(8)<<M_record<<" )";
 		cout<<"\t(gen / gen_limit) = ("<<setw(8)<<gen<<" / "<<setw(8)<<generation_limit<<" )\r";
+
+		static bool start=true;
+		static bool check=true;
+		if (check==true){
+			check = checkTimeElapsed(start);
+			start=false;
+		}
+		static int count=0;
+		count++;
+		if (count%check_interval==0){
+			checkTimeLeft();
+			if (interrupt==true)
+				break;
+		}
+
 	}
 	cout<<endl;
 	updateWinDensity();

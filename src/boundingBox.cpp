@@ -6,6 +6,7 @@
 #include <string>
 #include <limits>
 #include <cmath>
+#include "timer.h"
 
 using namespace std;
 
@@ -434,16 +435,41 @@ void BoundingBox::output(ostream& os)
 
 void BoundingBox::opt()
 {
+	size_t size = _windowsSet.size();
 	for(size_t i = 0 ; i <_windowsSet.size() ; ++i)
+	{
+		timer.periodStart();
+
 		_windowsSet[i]->linearSolve();
 		//_windowsSet[i]->directSim();
+
+		checkTimeLeft();
+		cout<<endl;
+		cout<<"opt windows set : "<<i+1<<" / "<<size<<endl;
+		reportTime();
+
+		if (interrupt==true)
+			break;
+	}
 }
 
 void BoundingBox::gen()
 {
+	size_t size = _windowsSet.size();
 	for(size_t i = 0 ; i <_windowsSet.size() ; ++i){
+
+		timer.periodStart();
+
 		cout<<"#################################  Window Set"<<i+1<<"  ##################################"<<endl;
 		_windowsSet[i]->genSim();
+
+		checkTimeLeft();
+		cout<<endl;
+		cout<<"gen windows set : "<<i+1<<" / "<<size<<endl;
+		reportTime();
+
+		if (interrupt==true)
+			break;
 	}
 }
 

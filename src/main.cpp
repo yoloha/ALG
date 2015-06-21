@@ -3,6 +3,7 @@
 #include "colorBalancing.h"
 #include "optMethod.h"
 #include "tm_usage.h"
+#include "timer.h"
 
 using namespace std;
 using namespace CommonNs;
@@ -16,9 +17,7 @@ int main(int argc, char const *argv[])
 	   return 0;
 	}
 
-	TmUsage tmusg;
-	TmStat stat;
-	tmusg.totalStart();
+	timer.totalStart();
 
 	BoundingBox Bbox;
 
@@ -28,8 +27,6 @@ int main(int argc, char const *argv[])
 		return false;
 	}
 	Bbox.readBlock(dofile);
-
-	tmusg.periodStart();
 
 	Bbox.buildGroup(CHECKALL_METHOD);
 	Bbox.buildWindow();
@@ -47,7 +44,7 @@ int main(int argc, char const *argv[])
 	// case 3:*82.60
 	// case 4: 1.85
 	// case 5:*2.09
-	tmusg.getPeriodUsage(stat);
+	timer.getTotalUsage(timing);
 
 
 	
@@ -61,9 +58,9 @@ int main(int argc, char const *argv[])
 		//Bbox.output(cout);
 	}
 
-	cout <<"user time: " << stat.uTime / 1000000.0 << "s" << endl; // print period user time in seconds
-	cout <<"system time: " << stat.sTime / 1000000.0 << "s" << endl; // print period systemtime in seconds
-	cout <<"user+system time:" << (stat.uTime + stat.sTime) / 1000000.0 << "s" << endl; 
+	cout <<"user time: " << timing.uTime / 1000000.0 << "s" << endl; // print period user time in seconds
+	cout <<"system time: " << timing.sTime / 1000000.0 << "s" << endl; // print period systemtime in seconds
+	cout <<"user+system time:" << (timing.uTime + timing.sTime) / 1000000.0 << "s" << endl; 
 	
 	return 0;
 }

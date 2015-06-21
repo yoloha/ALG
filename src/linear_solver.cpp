@@ -4,6 +4,7 @@
 #include <bitset>
 #include <iomanip>
 #include <stdio.h>
+#include "timer.h"
 
 using namespace std;
 
@@ -239,6 +240,14 @@ bool optimalSim(vector<size_t> & sim, vector<vector<int> > & G)
 			printRowVector(cout,vCnt.tmpIdx);
 			cout<<"/";
 			printRowVector(cout,vCnt.key);
+
+			static int count=0;
+			count++;
+			if (count%check_interval==0){
+				checkTimeLeft();
+				if (interrupt==true)
+					break;
+			}
 		}
 		cout<<endl<<"Total minCntSimResult"<<endl;
 		printRowVector(cout,minCntSimResult);
