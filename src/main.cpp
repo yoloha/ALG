@@ -40,10 +40,10 @@ int main(int argc, char const *argv[])
 	
 	Bbox.gen();
 	// case 1: 14.57
-	// case 2: 6.09
-	// case 3:*82.60
+	// case 2:*5.97
+	// case 3:*79.52      12.6011 11.6306
 	// case 4: 1.85
-	// case 5:*2.09
+	// case 5:*1.54 
 	timer.getTotalUsage(timing);
 
 

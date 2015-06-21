@@ -98,7 +98,7 @@ void WindowsSet::directSim()
 
 void WindowsSet::genSim()
 {
-	if(_groupNum<=25){
+if(_groupNum<=20){
 		directSim();
 		updateWinDensity();
 		return;
@@ -126,8 +126,9 @@ void WindowsSet::genSim()
 	//Note that the current update on generation_limit may cause the program run for a long long time
 	// if the result improves with a huge step at large gen number
 	//******************************************************************************************************************** 
-	int generation_limit = _groupNum*_groupNum*100;
-	int sex_limit = _groupNum; // don't let the same couple have sex too many times if their children are rubbish XD
+	cout<<"groupNum = "<<_groupNum<<endl;
+	int generation_limit = _groupNum*_groupNum*_groupNum*10;
+	int sex_limit = _groupNum*10; // don't let the same couple have sex too many times if their children are rubbish XD
 	int sex_time = 0;
 	for(int gen=0;gen<generation_limit;gen++){
 		if( (sex_time <= sex_limit) && (F_record != M_record) ){
@@ -135,18 +136,17 @@ void WindowsSet::genSim()
 				RandomNumGen rngtime(time(0)+gen+off);
 				vector<size_t> C = sex(F,M,_groupNum,rngtime(_groupNum),rngtime(2));
 				result = simulate(C);
-				if(result < min(F_record, M_record)){
-					sex_time = 0; // child proves to be good, let parents have more sex
-					if(rng(2)){
-						//cout<<"child replaces father at generation = "<<gen<<"    offspring = "<<off<<"   density = "<<result<<endl;
-						F = C;
-						F_record = result;
-					}
-					else{
-						//cout<<"child replaces mother at generation = "<<gen<<"    offspring = "<<off<<"   density = "<<result<<endl;
-						M = C;
-						M_record = result;
-					}
+				if(result < F_record){
+					sex_time = 0;
+					generation_limit += gen*(F_record-result);
+					F_record = result;
+					F = C;
+				}
+				else if(result < M_record && result != F_record){
+					sex_time = 0;
+					generation_limit += gen*(M_record-result);
+					M_record = result;
+					M = C;
 				}
 			}
 		}
@@ -162,19 +162,35 @@ void WindowsSet::genSim()
 			sex_time = 0; // new partner, resets available sex time
 			generation_limit += gen*(F_record-result);
 			F_record = result;
-			//cout<<"stranger replaces father at generation = "<<gen<<"   density = "<<result<<"\r"<<endl;
-			F=S;
+			F = S;
 		}
-		else if(result < M_record){
+		else if(result < M_record && result != F_record){
 			sex_time = 0; // new partner, resets available sex time
 			generation_limit += gen*(M_record-result);
 			M_record = result;
-			//cout<<"stranger replaces mother at generation = "<<gen<<"   density = "<<result<<"\r"<<endl;
-			M=S;
+			M = S;
+		}
+		//try-out sex with the best one
+		vector<size_t> T;
+		if(F_record < M_record)
+			T = sex(S,F,_groupNum,rng(_groupNum),rng(2));
+		else
+			T = sex(S,M,_groupNum,rng(_groupNum),rng(2));
+		result = simulate(T);
+		if(result < F_record){
+			sex_time = 0;
+			generation_limit += gen*(F_record-result);
+			F_record = result;
+			F = T;
+		}
+		else if(result < M_record && result != F_record){
+			sex_time = 0;
+			generation_limit += gen*(M_record-result);
+			M_record = result;
+			M = T;
 		}
 		cout<<"(F,M) = ( "<<setw(8)<<F_record<<" , "<<setw(8)<<M_record<<" )";
-		cout<<"\t(gen / gen_limit) = ("<<setw(8)<<gen<<" / "<<setw(8)<<generation_limit<<" )\r";
-
+		cout<<"\t(gen / generation_limit) = ("<<setw(8)<<gen<<" / "<<setw(8)<<generation_limit<<" )\r";
 		static bool start=true;
 		static bool check=true;
 		if (check==true){
@@ -188,7 +204,6 @@ void WindowsSet::genSim()
 			if (interrupt==true)
 				break;
 		}
-
 	}
 	cout<<endl;
 	updateWinDensity();
