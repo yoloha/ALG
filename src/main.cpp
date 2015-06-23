@@ -31,19 +31,34 @@ int main(int argc, char const *argv[])
 	Bbox.buildGroup(CHECKALL_METHOD);
 	Bbox.buildWindow();
 	Bbox.buildWindowsSet();
-	//Bbox.opt();
+	//Bbox.opt(LINEAR);
 	// case 1: 
 	// case 2: 
 	// case 3: 
 	// case 4: 
 	// case 5: 
-	
-	Bbox.gen();
+
+	Bbox.opt(GENETIC);
 	// case 1: 14.57
 	// case 2:*5.97
 	// case 3:*79.52      12.6011 11.6306
 	// case 4: 1.85
 	// case 5:*1.54 
+
+	//Bbox.opt(GREEDY_N);
+	// case 1: 14.57
+	// case 2: 49.86
+	// case 3: 273.18
+	// case 4: 1.85
+	// case 5: 99.91
+
+	//Bbox.opt(GREEDY_N2);
+	// case 1: 16.94
+	// case 2: 75.31
+	// case 3: 325.97
+	// case 4: 1.85
+	// case 5: 101.98
+	
 	timer.getTotalUsage(timing);
 
 

@@ -37,8 +37,8 @@ public:
 	void buildWindow();
 	void calWindowDensity();
 	void buildWindowsSet();
-	void opt();
-	void gen();
+	void opt(optFlag);
+	//void gen();
 	void printInfo(ostream &);
 	void output(ostream &);
 	
@@ -146,8 +146,11 @@ public:
 	Window();
 	Window(Coordinate);
 	~Window();
-	friend ostream& operator << (ostream&, const Window&);
+
+	static int getOmega();
 	const Coordinate getWindowCoord();
+
+	friend ostream& operator << (ostream&, const Window&);
 
 private:
 	static int      omega;
@@ -166,16 +169,20 @@ friend class BoundingBox;
 
 public:
 	//WindowsSet() : _groupNum(0), _sim(0), _densityDiffSum(-1) {}
-	WindowsSet() : _groupNum(0), _densityDiffSum(-1) {}
+	//WindowsSet() : _groupNum(0), _densityDiffSum(-1) {}
+	WindowsSet() : _groupNum(0) {}
 	WindowsSet(Window*);
 	~WindowsSet() {}
 
 	//void simulate(const size_t&);
 	double simulate(const vector<size_t>&);
 	void randSim(int max_time);
+	
 	void linearSolve();
 	void directSim();
 	void genSim();
+	void greedySolve(const int&);
+
 	friend ostream& operator <<(ostream& ,const WindowsSet&);
 
 private:
@@ -185,7 +192,8 @@ private:
 	int                     _groupNum;
 	//size_t                  _sim;
 	vector<size_t>          _sim;
-	double                  _densityDiffSum;
+	//double                  _densityDiffSum;
+	double                  _areaDiffSum;
 
 	void addWindow(Window*);
 	void addCrossGroup(Group*);

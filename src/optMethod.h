@@ -9,7 +9,11 @@ enum connectBlockFlag
 
 enum optFlag
 {
-
+	LINEAR,
+	DIRECT,
+	GENETIC,
+	GREEDY_N,
+	GREEDY_N2
 };
 
 #endif

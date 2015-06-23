@@ -21,8 +21,9 @@ boundingBox_private.o : boundingBox_private.cpp colorBalancing.h timer.h
 colorBalancing.o : colorBalancing.cpp colorBalancing.h timer.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
-optimize.o : optimize.cpp colorBalancing.h ../lib/rnGen.h timer.h
+optimize.o : optimize.cpp colorBalancing.h ../lib/rnGen.h greedy.h timer.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
+
 linear_solver.o : linear_solver.cpp timer.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 

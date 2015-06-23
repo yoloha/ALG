@@ -5,12 +5,12 @@
 #include <iomanip>
 #include "colorBalancing.h"
 #include "genetic_alg.h" 
+#include "greedy.h"
 #include "rnGen.h"
 #include "timer.h"
 
 using namespace std;
 #define MASK(i)  (size_t (1)<<(i))
-
 
 RandomNumGen rnGen(0);
 
@@ -209,3 +209,18 @@ if(_groupNum<=20){
 	updateWinDensity();
 }
 
+void
+WindowsSet::greedySolve(const int& method)
+{
+	cout<<"*-------------------------Calling Greedy Algorithm-----------------------*"<<endl;
+	vector<int> grpInWins(_areaMatrix.size(), 0);
+	vector< vector<int> > areaMatrixT(_areaMatrix[0].size(), grpInWins);
+	for (int i = 0, l = _areaMatrix.size(); i < l; i++) {
+		for (int j = 0; j < _groupNum; j++)
+			areaMatrixT[j][i] = _areaMatrix[i][j];
+	}
+
+	greedySim(_sim, areaMatrixT, method);
+	simulate(_sim); //
+	updateWinDensity();
+}

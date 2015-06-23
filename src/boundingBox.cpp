@@ -433,15 +433,34 @@ void BoundingBox::output(ostream& os)
 	}	
 }
 
-void BoundingBox::opt()
+void BoundingBox::opt(optFlag flag)
 {
 	size_t size = _windowsSet.size();
 	for(size_t i = 0 ; i <_windowsSet.size() ; ++i)
 	{
 		timer.periodStart();
 
-		_windowsSet[i]->linearSolve();
-		//_windowsSet[i]->directSim();
+		cout<<"#################################  Window Set"<<i+1<<"  ##################################"<<endl;
+
+		switch(flag) {
+			case LINEAR:
+				_windowsSet[i] -> linearSolve();
+				break;
+			case DIRECT:
+				_windowsSet[i] -> directSim();
+				break;
+			case GENETIC:
+				_windowsSet[i] -> genSim();
+				break;
+			case GREEDY_N:
+				_windowsSet[i] -> greedySolve(1);
+				break;
+			case GREEDY_N2:
+				_windowsSet[i] -> greedySolve(2);
+				break;
+			default:
+				break;
+		}
 
 		checkTimeLeft();
 		cout<<endl;
@@ -452,7 +471,7 @@ void BoundingBox::opt()
 			break;
 	}
 }
-
+/*
 void BoundingBox::gen()
 {
 	size_t size = _windowsSet.size();
@@ -472,6 +491,7 @@ void BoundingBox::gen()
 			break;
 	}
 }
+*/
 
 //}}} BoundingBox
 
