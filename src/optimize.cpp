@@ -80,7 +80,7 @@ void WindowsSet::linearSolve()
 void WindowsSet::directSim()
 {
 	if(_groupNum<=25){
-		cout<<"*-----------------Calling directSim-----------------*"<<endl;
+		cout<<"*-----------------------------Calling directSim----------------------------*"<<endl;
 		//cout<<MASK(_groupNum)<<endl;
 		for(size_t i = 0 ; i < MASK(_groupNum); ++i){
 			vector<size_t> temp;
@@ -105,7 +105,7 @@ if(_groupNum<=20){
 	}
 	RandomNumGen rng(time(0));
 	int num=(_groupNum%64==0)? _groupNum/64 : _groupNum/64+1;
-	cout<<"*-----------------Calling Genetic simulation-----------------*"<<endl;
+	cout<<"*-------------------------Calling Genetic simulation-----------------------*"<<endl;
 	// alpha genes
 	vector<size_t> F;
 	vector<size_t> M;
@@ -127,7 +127,7 @@ if(_groupNum<=20){
 	// if the result improves with a huge step at large gen number
 	//******************************************************************************************************************** 
 	cout<<"groupNum = "<<_groupNum<<endl;
-	int generation_limit = _groupNum*_groupNum*_groupNum*10;
+	int generation_limit = _groupNum*_groupNum*_groupNum;
 	int sex_limit = _groupNum*10; // don't let the same couple have sex too many times if their children are rubbish XD
 	int sex_time = 0;
 	for(int gen=0;gen<generation_limit;gen++){
@@ -189,7 +189,7 @@ if(_groupNum<=20){
 			M_record = result;
 			M = T;
 		}
-		cout<<"(F,M) = ( "<<setw(8)<<F_record<<" , "<<setw(8)<<M_record<<" )";
+		cout<<"(F,M,T) = ( "<<setw(8)<<F_record<<" , "<<setw(8)<<M_record<<" , "<<setw(8)<<result<<" )";
 		cout<<"\t(gen / generation_limit) = ("<<setw(8)<<gen<<" / "<<setw(8)<<generation_limit<<" )\r";
 		static bool start=true;
 		static bool check=true;
