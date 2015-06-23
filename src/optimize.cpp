@@ -127,7 +127,7 @@ if(_groupNum<=20){
 	// if the result improves with a huge step at large gen number
 	//******************************************************************************************************************** 
 	cout<<"groupNum = "<<_groupNum<<endl;
-	int generation_limit = _groupNum*_groupNum*_groupNum;
+	int generation_limit = _groupNum*_groupNum*_groupNum*3;
 	int sex_limit = _groupNum*10; // don't let the same couple have sex too many times if their children are rubbish XD
 	int sex_time = 0;
 	for(int gen=0;gen<generation_limit;gen++){
