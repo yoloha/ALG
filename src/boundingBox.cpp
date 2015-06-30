@@ -23,8 +23,8 @@ BoundingBox::BoundingBox()
 
 BoundingBox::~BoundingBox() 
 {
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	//int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	int xmax_w = computeXmaxWindow();
+	//int ymax_w = computeYmaxWindow();
 	for(int i = 0; i < xmax_w ; ++i){
 		delete [] _windows[i];
 	}
@@ -198,8 +198,8 @@ void BoundingBox::colorBlocks()
 
 void BoundingBox::buildWindow()
 {
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	int xmax_w = computeXmaxWindow();
+	int ymax_w = computeYmaxWindow();
 
 	_windows = new Window*[xmax_w];
 	for(int i = 0; i < xmax_w ; ++i){
@@ -249,8 +249,9 @@ void BoundingBox::buildWindow()
 		buildBlocksAWindow(checkedwindow_g, i);
 		buildBlocksBWindow(checkedwindow_g, i);
 
+
 		if( checkedwindow_g.size()==1 )
-			_windows[checkedwindow_g[0].first-1][checkedwindow_g[0].second-1].innerGroup.push_back( &_Cgroup[i] );
+			_windows[checkedwindow_g[0].first][checkedwindow_g[0].second].innerGroup.push_back( &_Cgroup[i] );
 		else{
 			_crossGroup.push_back( &_Cgroup[i] );
 		}
@@ -260,8 +261,8 @@ void BoundingBox::buildWindow()
 void 
 BoundingBox::calWindowDensity()
 {
-	int xmax_w = (Bbox_coord.x_right - Bbox_coord.x_left) / omega + 1;
-	int ymax_w = (Bbox_coord.y_up - Bbox_coord.y_down) / omega + 1;
+	int xmax_w = computeXmaxWindow();
+	int ymax_w = computeYmaxWindow();
 	
 	for (int i = 0; i < ymax_w; i++) {
 		for (int j = 0; j < xmax_w; j++) {
@@ -327,8 +328,8 @@ void
 BoundingBox::buildWindowsSet()
 {
 	vector<WindowsSet*> sets;
-	int xmax_w = (Bbox_coord.x_right - Bbox_coord.x_left) / omega + 1;
-	int ymax_w = (Bbox_coord.y_up - Bbox_coord.y_down) / omega + 1;
+	int xmax_w = computeXmaxWindow();
+	int ymax_w = computeYmaxWindow();
 	for (int i = 0; i < ymax_w; i++) {
 		for (int j = 0; j < xmax_w; j++) {
 			sets.push_back(new WindowsSet(&_windows[j][i]));
@@ -373,8 +374,8 @@ void BoundingBox::printInfo(ostream& os)
 	os<<"OMEGA : "<<omega<<endl;
 	os<<"Boundary : "<<Block(Bbox_coord)<<endl<<endl;
 	
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	int xmax_w = computeXmaxWindow();
+	int ymax_w = computeYmaxWindow();
 	/*for (int i = 0 ; i < xmax_w ; ++i){
 		for(int j = 0 ; j < ymax_w ; ++j)
 			os<<_windows[i][j];
@@ -396,6 +397,10 @@ void BoundingBox::printInfo(ostream& os)
 			   << setprecision(2) << fixed << _windows[j][i].densityA << " "
 			   << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;
 			density+=abs(_windows[j][i].densityA - _windows[j][i].densityB);
+			os <<"Inner Group : ";
+			for (int k = 0; k < _windows[j][i].innerGroup.size(); k++)
+				os << *_windows[j][i].innerGroup[k]<<endl;
+			os << endl;
 		}
 	}
 	os<<endl;
@@ -405,8 +410,8 @@ void BoundingBox::printInfo(ostream& os)
 
 void BoundingBox::output(ostream& os)
 {
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	int xmax_w = computeXmaxWindow();
+	int ymax_w = computeYmaxWindow();
 	
 	for(int i=0;i<ymax_w;i++){
 		for(int j=0;j<xmax_w;j++){
@@ -441,7 +446,12 @@ void BoundingBox::opt(optFlag flag)
 		timer.periodStart();
 
 		cout<<"#################################  Window Set"<<i+1<<"  ##################################"<<endl;
-
+		if(_windowsSet[i]->_areaMatrix[0].size()<35)
+			flag = LINEAR;
+		else{
+			_windowsSet[i] -> greedySolve(1);
+			flag = GENETIC;
+		}
 		switch(flag) {
 			case LINEAR:
 				_windowsSet[i] -> linearSolve();

@@ -132,12 +132,12 @@ void printMatrix(ostream& os , const vector<vector<int> > matrix)
 	if(matrix.empty()) return;
 	for(size_t j = 0 ; j < matrix[0].size() ; ++j){
 		for(size_t i = 0 ; i < matrix.size() ; ++i)
-			os<<setw(7)<<matrix[i][j];
+			os<<setw(9)<<matrix[i][j];
 		os<<endl;
 	}
 	os<<endl;
 	for(size_t i = 0 ; i < matrix.size() ; ++i)
-		os<<setw(7)<<vecOneNorm(matrix[i]);
+		os<<setw(9)<<vecOneNorm(matrix[i]);
 	os<<endl<<endl;
 }
 
@@ -231,15 +231,19 @@ bool optimalSim(vector<size_t> & sim, vector<vector<int> > & G)
 			if(BruteForceSim(reducedMatrix,minNorm, simResult, &vCnt())){
 				cout<<endl<<endl<<"Find and Update Minimum !!"<<endl;
 				minCntSimResult = vCnt.tmpIdx;
+				printRowVector(cout,vCnt.tmpIdx);
+				cout<<endl;
 			}
 			//BruteForceSim(reducedMatrix);
 
+			
 			for(int i = 0 ; i < 80 ; ++i) cout<<'\r';
 			fflush(stdout);
 			cout<<"Simulation Progress : # ";
 			printRowVector(cout,vCnt.tmpIdx);
 			cout<<"/";
 			printRowVector(cout,vCnt.key);
+			
 
 			static int count=0;
 			count++;
@@ -251,8 +255,8 @@ bool optimalSim(vector<size_t> & sim, vector<vector<int> > & G)
 		}
 		cout<<endl<<"Total minCntSimResult"<<endl;
 		printRowVector(cout,minCntSimResult);
-		cout<<endl;
-		cout<<"Minimum Value Appear Times : "<<globalcounter<<endl;
+		cout<<endl<<endl;
+		//cout<<"Minimum Value Appear Times : "<<globalcounter<<endl;
 		//permute back
 		for(size_t i = 0 ; i <submatrixIdx.size() ; ++i){
 			if((simResult&MASK(i))!=0){
@@ -275,15 +279,10 @@ bool optimalSim(vector<size_t> & sim, vector<vector<int> > & G)
 			if((simResult&MASK(i))!=0) sim[0] = sim[0] | MASK(GMap[i].index);
 		}
 			//printInfo
-		cout<<"After permute : "<<endl;
+		//cout<<"After permute : "<<endl;
 		bitset<64> z(sim[0]);
 		cout<<z<<endl;
-	}
-
-	
-	
-
-	
+	}	
 	return true;
 }
 
@@ -328,6 +327,7 @@ bool BruteForceSim (vector<vector<int> >&G, int& minNorm , size_t& minSim , vect
 				(*tmpV)[j] = (*tmpV)[j] + 2*G[index][j];
 			if(minNorm>=vecOneNorm(*tmpV)) {
 				minNorm = vecOneNorm(*tmpV);
+				/*
 				if(minNorm == 254383) {
 					globalcounter++;
 					cout<<endl<<globalcounter<<endl;
@@ -335,12 +335,13 @@ bool BruteForceSim (vector<vector<int> >&G, int& minNorm , size_t& minSim , vect
 					cout<<endl<<"Temporary Simulation Value : "<<x<<endl;
 					cout<<"Temporary Area Difference  : "<<minNorm;	
 				}
+				*/
 				minSim = simVal;
 				ret = true;
 				//printInfo	
 				bitset<64> x(simVal);
-				//cout<<endl<<"Temporary Simulation Value : "<<x<<endl;
-				//cout<<"Temporary Area Difference  : "<<minNorm;		
+				cout<<endl<<"Temporary Simulation Value : "<<x<<endl;
+				cout<<"Temporary Area Difference  : "<<minNorm;		
 			}
 		}
 		else if((cnt&size_t(3))==3){
@@ -348,6 +349,7 @@ bool BruteForceSim (vector<vector<int> >&G, int& minNorm , size_t& minSim , vect
 				(*tmpV)[j] = (*tmpV)[j] - 2*G[index][j];
 			if(minNorm>=vecOneNorm(*tmpV)) {
 				minNorm = vecOneNorm(*tmpV);
+				/*
 				if(minNorm == 254383) {
 					globalcounter++;
 					cout<<endl<<globalcounter<<endl;
@@ -355,12 +357,13 @@ bool BruteForceSim (vector<vector<int> >&G, int& minNorm , size_t& minSim , vect
 					cout<<endl<<"Temporary Simulation Value : "<<x<<endl;
 					cout<<"Temporary Area Difference  : "<<minNorm;	
 				}
+				*/
 				minSim = simVal;
 				ret = true;
 				//printInfo
 				bitset<64> x(simVal);
-				//cout<<endl<<"Temporary Simulation Value : "<<x<<endl;
-				//cout<<"Temporary Area Difference  : "<<minNorm;	
+				cout<<endl<<"Temporary Simulation Value : "<<x<<endl;
+				cout<<"Temporary Area Difference  : "<<minNorm;	
 			}	
 		}
 	}
@@ -389,8 +392,6 @@ size_t BruteForceSim(vector<vector<int> >&  G)
 	cout<<endl;
 	*/
 	minNorm = vecOneNorm(*tmpV);
-	cout<<"initial norm : "<<vecOneNorm(*tmpV)<<endl;
-	
 	size_t j;
 
 	for(size_t i = 1 ; i < MASK(groupNum) ; ++i){
@@ -409,9 +410,11 @@ size_t BruteForceSim(vector<vector<int> >&  G)
 				minNorm = vecOneNorm(*tmpV);
 				minSim = simVal;
 				//printInfo	
-				bitset<64> x(simVal);
-				cout<<x<<endl;	
-				cout<<minNorm<<endl;		
+				//bitset<64> x(simVal);
+				////cout<<endl<<"Temporary Simulation Value : "<<x<<endl;
+				//cout<<"Temporary Area Difference  : "<<minNorm<<endl;
+				//printVector(cout,*tmpV);		
+				//cout<<endl;	
 			}
 		}
 		else if((cnt&size_t(3))==3){
@@ -421,9 +424,11 @@ size_t BruteForceSim(vector<vector<int> >&  G)
 				minNorm = vecOneNorm(*tmpV);
 				minSim = simVal;
 				//printInfo
-				bitset<64> x(simVal);
-				cout<<x<<endl;
-				cout<<minNorm<<endl;
+				//bitset<64> x(simVal);
+				//cout<<endl<<"Temporary Simulation Value : "<<x<<endl;
+				//cout<<"Temporary Area Difference  : "<<minNorm<<endl;	
+				//printVector(cout,*tmpV);
+				//cout<<endl;
 			}	
 		}
 	}

@@ -65,7 +65,7 @@ int main(int argc, char const *argv[])
 	
 	if (argc == 3) {
 		ofstream outfile(argv[2], ios::out);
-		//Bbox.printInfo(outfile);
+		Bbox.printInfo(outfile);
 		Bbox.output(outfile);
 	}
 	else {

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -129,164 +130,106 @@ bool BoundingBox::DFSvisit(Block* b,int k)
     return true;
 }
 
-void BoundingBox::buildBlocksAWindow(vector<pair<int,int> >& checkedwindow_g, int i)
+void BoundingBox::buildBlocksAWindow(vector<pair<int,int> >& checkedwindow_g, int groupNum)
 {
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	int xmax_w = computeXmaxWindow();
+	int ymax_w = computeYmaxWindow();
 
-	for (size_t k = 0; k < _Cgroup[i]._blocksA.size(); k++){
-		bool overlap_r = false;
-		bool overlap_u = false;
-		Block* thisBlock = _Cgroup[i]._blocksA[k];
-		if(Bbox_coord.x_right - thisBlock->blockCoord.x_right < omega)
-			overlap_r = true;
-		if(Bbox_coord.y_up - thisBlock->blockCoord.y_up < omega)
-			overlap_u = true;
-		int block_xmax_w = ((thisBlock->blockCoord.x_right-Bbox_coord.x_left) / omega)+1;
-		int block_xmin_w = ((thisBlock->blockCoord.x_left-Bbox_coord.x_left) / omega)+1;
-		int block_ymax_w = ((thisBlock->blockCoord.y_up-Bbox_coord.y_down) / omega)+1;
-		int block_ymin_w = ((thisBlock->blockCoord.y_down-Bbox_coord.y_down) / omega)+1;
-		vector<pair<int,int> > checkedwindow_b;
+	for (size_t k = 0; k < _Cgroup[groupNum]._blocksA.size(); k++){
+		Block* thisBlock = _Cgroup[groupNum]._blocksA[k];
 
-		if( find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmax_w,block_ymax_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksA[k]->windows.push_back( &_windows[block_xmax_w-1][block_ymax_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmax_w,block_ymax_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmax_w,block_ymax_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmax_w-1][block_ymax_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmax_w,block_ymax_w) );
-			}
-		}
-		if( find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmin_w,block_ymax_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksA[k]->windows.push_back( &_windows[block_xmin_w-1][block_ymax_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmin_w,block_ymax_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmin_w,block_ymax_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmin_w-1][block_ymax_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmin_w,block_ymax_w) );
-			}
-		}
-		if( find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmax_w,block_ymin_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksA[k]->windows.push_back( &_windows[block_xmax_w-1][block_ymin_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmax_w,block_ymin_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmax_w,block_ymin_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmax_w-1][block_ymin_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmax_w,block_ymin_w) );
-			}
-		}
-		if( find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmin_w,block_ymin_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksA[k]->windows.push_back( &_windows[block_xmin_w-1][block_ymin_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmin_w,block_ymin_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmin_w,block_ymin_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmin_w-1][block_ymin_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmin_w,block_ymin_w) );
-			}
-		}
-		if(overlap_r==true &&
-			find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(xmax_w,block_ymin_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksA[k]->windows.push_back( &_windows[xmax_w-1][block_ymin_w-1] );
-			checkedwindow_b.push_back( make_pair(xmax_w,block_ymin_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(xmax_w,block_ymin_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[xmax_w-1][block_ymin_w-1] );
-				checkedwindow_g.push_back( make_pair(xmax_w,block_ymin_w) );
-			}
-		}
-		if(overlap_u==true &&
-			find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmin_w,ymax_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksA[k]->windows.push_back( &_windows[block_xmin_w-1][ymax_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmin_w,ymax_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmin_w,ymax_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmin_w-1][ymax_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmin_w,ymax_w) );
-			}
-		}
-		if(overlap_r==true && overlap_u==true &&
-			find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(xmax_w,ymax_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksA[k]->windows.push_back( &_windows[xmax_w-1][ymax_w-1] );
-			checkedwindow_b.push_back( make_pair(xmax_w,ymax_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(xmax_w,ymax_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[xmax_w-1][ymax_w-1] );
-				checkedwindow_g.push_back( make_pair(xmax_w,ymax_w) );
+		int x_right_diff_left = thisBlock->blockCoord.x_right-Bbox_coord.x_left;
+		int x_right_diff_right = Bbox_coord.x_right-thisBlock->blockCoord.x_right;
+		int block_xmax_w = x_right_diff_left / omega;
+		if( x_right_diff_right < omega )
+			block_xmax_w=xmax_w-1;
+
+		int x_left_diff_left = thisBlock->blockCoord.x_left-Bbox_coord.x_left;
+		int x_left_diff_right = Bbox_coord.x_right-thisBlock->blockCoord.x_left;
+		int block_xmin_w = x_left_diff_left / omega;
+//		if( x_left_diff_right < omega )
+//			block_xmin_w=xmax_w-1;
+
+		int y_up_diff_down = thisBlock->blockCoord.y_up-Bbox_coord.y_down;
+		int y_up_diff_up = Bbox_coord.y_up-thisBlock->blockCoord.y_up;
+		int block_ymax_w = y_up_diff_down / omega;
+		if( y_up_diff_up < omega )
+			block_ymax_w=ymax_w-1;
+
+		int y_down_diff_down = thisBlock->blockCoord.y_down-Bbox_coord.y_down;
+		int y_down_diff_up = Bbox_coord.y_up-thisBlock->blockCoord.y_down;
+		int block_ymin_w = y_down_diff_down / omega;
+//		if( y_down_diff_up < omega )
+//			block_ymin_w=ymax_w-1;
+		
+		for (int i = block_ymin_w; i <= block_ymax_w; i++){
+			for (int j = block_xmin_w; j <= block_xmax_w; j++){
+				thisBlock->windows.push_back( &_windows[j][i] );
+				if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmax_w,block_ymax_w))==checkedwindow_g.end() ){
+					_Cgroup[groupNum]._windows.push_back( &_windows[j][i] );
+					checkedwindow_g.push_back( make_pair(j,i) );
+				}
 			}
 		}
 	}
 }
 
-void BoundingBox::buildBlocksBWindow(vector<pair<int,int> >& checkedwindow_g, int i)
+void BoundingBox::buildBlocksBWindow(vector<pair<int,int> >& checkedwindow_g, int groupNum)
 {
-	int xmax_w = (Bbox_coord.x_right-Bbox_coord.x_left)/omega + 1;
-	int ymax_w = (Bbox_coord.y_up-Bbox_coord.y_down)/omega + 1;
+	int xmax_w = computeXmaxWindow();
+	int ymax_w = computeYmaxWindow();
 
-	for (size_t k = 0; k < _Cgroup[i]._blocksB.size(); k++){
-		bool overlap_r = false;
-		bool overlap_u = false;
-		Block* thisBlock = _Cgroup[i]._blocksB[k];
-		if(Bbox_coord.x_right - thisBlock->blockCoord.x_right < omega)
-			overlap_r = true;
-		if(Bbox_coord.y_up - thisBlock->blockCoord.y_up < omega)
-			overlap_u = true;
-		int block_xmax_w = ((thisBlock->blockCoord.x_right-Bbox_coord.x_left) / omega)+1;
-		int block_xmin_w = ((thisBlock->blockCoord.x_left-Bbox_coord.x_left) / omega)+1;
-		int block_ymax_w = ((thisBlock->blockCoord.y_up-Bbox_coord.y_down) / omega)+1;
-		int block_ymin_w = ((thisBlock->blockCoord.y_down-Bbox_coord.y_down) / omega)+1;
-		vector<pair<int,int> > checkedwindow_b;
+	for (size_t k = 0; k < _Cgroup[groupNum]._blocksB.size(); k++){
+		Block* thisBlock = _Cgroup[groupNum]._blocksB[k];
 
-		if( find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmax_w,block_ymax_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksB[k]->windows.push_back( &_windows[block_xmax_w-1][block_ymax_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmax_w,block_ymax_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmax_w,block_ymax_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmax_w-1][block_ymax_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmax_w,block_ymax_w) );
-			}
-		}
-		if( find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmin_w,block_ymax_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksB[k]->windows.push_back( &_windows[block_xmin_w-1][block_ymax_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmin_w,block_ymax_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmin_w,block_ymax_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmin_w-1][block_ymax_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmin_w,block_ymax_w) );
-			}
-		}
-		if( find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmax_w,block_ymin_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksB[k]->windows.push_back( &_windows[block_xmax_w-1][block_ymin_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmax_w,block_ymin_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmax_w,block_ymin_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmax_w-1][block_ymin_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmax_w,block_ymin_w) );
-			}
-		}
-		if( find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmin_w,block_ymin_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksB[k]->windows.push_back( &_windows[block_xmin_w-1][block_ymin_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmin_w,block_ymin_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmin_w,block_ymin_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmin_w-1][block_ymin_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmin_w,block_ymin_w) );
-			}
-		}
-		if(overlap_r==true &&
-			find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(xmax_w,block_ymin_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksB[k]->windows.push_back( &_windows[xmax_w-1][block_ymin_w-1] );
-			checkedwindow_b.push_back( make_pair(xmax_w,block_ymin_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(xmax_w,block_ymin_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[xmax_w-1][block_ymin_w-1] );
-				checkedwindow_g.push_back( make_pair(xmax_w,block_ymin_w) );
-			}
-		}
-		if(overlap_u==true &&
-			find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(block_xmin_w,ymax_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksB[k]->windows.push_back( &_windows[block_xmin_w-1][ymax_w-1] );
-			checkedwindow_b.push_back( make_pair(block_xmin_w,ymax_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmin_w,ymax_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[block_xmin_w-1][ymax_w-1] );
-				checkedwindow_g.push_back( make_pair(block_xmin_w,ymax_w) );
-			}
-		}
-		if(overlap_r==true && overlap_u==true &&
-			find(checkedwindow_b.begin(),checkedwindow_b.end(),make_pair(xmax_w,ymax_w))==checkedwindow_b.end() ){
-			_Cgroup[i]._blocksB[k]->windows.push_back( &_windows[xmax_w-1][ymax_w-1] );
-			checkedwindow_b.push_back( make_pair(xmax_w,ymax_w) );
-			if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(xmax_w,ymax_w))==checkedwindow_g.end() ){
-				_Cgroup[i]._windows.push_back( &_windows[xmax_w-1][ymax_w-1] );
-				checkedwindow_g.push_back( make_pair(xmax_w,ymax_w) );
+		int x_right_diff_left = thisBlock->blockCoord.x_right-Bbox_coord.x_left;
+		int x_right_diff_right = Bbox_coord.x_right-thisBlock->blockCoord.x_right;
+		int block_xmax_w = x_right_diff_left / omega;
+		if( x_right_diff_right < omega )
+			block_xmax_w=xmax_w-1;
+
+		int x_left_diff_left = thisBlock->blockCoord.x_left-Bbox_coord.x_left;
+		int x_left_diff_right = Bbox_coord.x_right-thisBlock->blockCoord.x_left;
+		int block_xmin_w = x_left_diff_left / omega;
+//		if( x_left_diff_right < omega )
+//			block_xmin_w=xmax_w-1;
+
+		int y_up_diff_down = thisBlock->blockCoord.y_up-Bbox_coord.y_down;
+		int y_up_diff_up = Bbox_coord.y_up-thisBlock->blockCoord.y_up;
+		int block_ymax_w = y_up_diff_down / omega;
+		if( y_up_diff_up < omega )
+			block_ymax_w=ymax_w-1;
+
+		int y_down_diff_down = thisBlock->blockCoord.y_down-Bbox_coord.y_down;
+		int y_down_diff_up = Bbox_coord.y_up-thisBlock->blockCoord.y_down;
+		int block_ymin_w = y_down_diff_down / omega;
+//		if( y_down_diff_up < omega )
+//			block_ymin_w=ymax_w-1;
+		
+		for (int i = block_ymin_w; i <= block_ymax_w; i++){
+			for (int j = block_xmin_w; j <= block_xmax_w; j++){
+				thisBlock->windows.push_back( &_windows[j][i] );
+				if( find(checkedwindow_g.begin(),checkedwindow_g.end(),make_pair(block_xmax_w,block_ymax_w))==checkedwindow_g.end() ){
+					_Cgroup[groupNum]._windows.push_back( &_windows[j][i] );
+					checkedwindow_g.push_back( make_pair(j,i) );
+				}
 			}
 		}
 	}
+}
+
+int BoundingBox::computeXmaxWindow()
+{
+	int xmax_w = ceil((double)(Bbox_coord.x_right-Bbox_coord.x_left)/omega);
+	if(xmax_w==0)
+		xmax_w=1;
+	return xmax_w;
+}
+
+int BoundingBox::computeYmaxWindow()
+{
+	int ymax_w = ceil((double)(Bbox_coord.y_up-Bbox_coord.y_down)/omega);
+	if(ymax_w==0)
+		ymax_w=1;
+	return ymax_w;
 }

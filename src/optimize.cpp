@@ -36,7 +36,7 @@ void  WindowsSet::randSim(int max_time)
 
 void WindowsSet::linearSolve()
 {
-	if(_groupNum<70){
+	if(_groupNum<90){
 		//transpose
 		vector<int> tmp(_areaMatrix.size(),0);
 		vector<vector<int> >G(_areaMatrix[0].size(),tmp);
@@ -46,7 +46,8 @@ void WindowsSet::linearSolve()
 		}
 		//solving
 		cout<<"Solving WindowsSet ..."<<endl<<endl;
-		cout<<optimalSim(_sim,G);
+		printMatrix(cout,_areaMatrix);
+		optimalSim(_sim,G);
 	}
 	else{
 		size_t max_time = MASK(20);
@@ -98,11 +99,6 @@ void WindowsSet::directSim()
 
 void WindowsSet::genSim()
 {
-if(_groupNum<=20){
-		directSim();
-		updateWinDensity();
-		return;
-	}
 	RandomNumGen rng(time(0));
 	int num=(_groupNum%64==0)? _groupNum/64 : _groupNum/64+1;
 	cout<<"*-------------------------Calling Genetic simulation-----------------------*"<<endl;
@@ -120,14 +116,14 @@ if(_groupNum<=20){
 			M.push_back(rng(MASK(_groupNum%64)));
 		}
 	}
-	F_record = simulate(F);
-	M_record = simulate(M);
+	F_record = simulate(F)/((Window::omega * Window::omega))*100;
+	M_record = simulate(M)/((Window::omega * Window::omega))*100;
 	//********************************************************************************************************************
 	//Note that the current update on generation_limit may cause the program run for a long long time
 	// if the result improves with a huge step at large gen number
 	//******************************************************************************************************************** 
 	cout<<"groupNum = "<<_groupNum<<endl;
-	int generation_limit = _groupNum*_groupNum*_groupNum*3;
+	int generation_limit = _groupNum*_groupNum*5;
 	int sex_limit = _groupNum*10; // don't let the same couple have sex too many times if their children are rubbish XD
 	int sex_time = 0;
 	for(int gen=0;gen<generation_limit;gen++){
@@ -135,7 +131,7 @@ if(_groupNum<=20){
 			for(int off=0;off<3;off++,sex_time++){
 				RandomNumGen rngtime(time(0)+gen+off);
 				vector<size_t> C = sex(F,M,_groupNum,rngtime(_groupNum),rngtime(2));
-				result = simulate(C);
+				result = simulate(C)/((Window::omega * Window::omega))*100;;
 				if(result < F_record){
 					sex_time = 0;
 					generation_limit += gen*(F_record-result);
@@ -144,7 +140,6 @@ if(_groupNum<=20){
 				}
 				else if(result < M_record && result != F_record){
 					sex_time = 0;
-					generation_limit += gen*(M_record-result);
 					M_record = result;
 					M = C;
 				}
@@ -157,7 +152,7 @@ if(_groupNum<=20){
 			else
 				S.push_back(rng(MASK(_groupNum%64)));
 		}
-		result = simulate(S);
+		result = simulate(S)/((Window::omega * Window::omega))*100;
 		if(result < F_record){
 			sex_time = 0; // new partner, resets available sex time
 			generation_limit += gen*(F_record-result);
@@ -166,7 +161,6 @@ if(_groupNum<=20){
 		}
 		else if(result < M_record && result != F_record){
 			sex_time = 0; // new partner, resets available sex time
-			generation_limit += gen*(M_record-result);
 			M_record = result;
 			M = S;
 		}
@@ -176,7 +170,7 @@ if(_groupNum<=20){
 			T = sex(S,F,_groupNum,rng(_groupNum),rng(2));
 		else
 			T = sex(S,M,_groupNum,rng(_groupNum),rng(2));
-		result = simulate(T);
+		result = simulate(T)/((Window::omega * Window::omega))*100;
 		if(result < F_record){
 			sex_time = 0;
 			generation_limit += gen*(F_record-result);
@@ -185,7 +179,6 @@ if(_groupNum<=20){
 		}
 		else if(result < M_record && result != F_record){
 			sex_time = 0;
-			generation_limit += gen*(M_record-result);
 			M_record = result;
 			M = T;
 		}

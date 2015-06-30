@@ -61,6 +61,8 @@ private:
 	void buildBlocksBWindow(vector<pair<int,int> >&, int i);
 	//void calWindowDensity();
 	//void buildWindowsSet();
+	int computeXmaxWindow();
+	int computeYmaxWindow();
 };
 
 class Block
@@ -101,7 +103,7 @@ public:
 	void addB(Block*);
 	void swapAB();
 	void addwindow(Window*);
-	//friend ostream& operator << (ostream& , const Group);
+	friend ostream& operator << (ostream& , const Group&);
 
 	const bool getColor() { return _color; }
 	void setColor(const int&);
@@ -149,6 +151,7 @@ public:
 
 	static int getOmega();
 	const Coordinate getWindowCoord();
+	const pair<int,int> getIdx();
 
 	friend ostream& operator << (ostream&, const Window&);
 
