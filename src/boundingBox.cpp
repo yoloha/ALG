@@ -432,10 +432,18 @@ void BoundingBox::output(ostream& os)
 	}
 	for(size_t i=0;i<_Cgroup.size();i++){
 		os<<"GROUP"<<endl;
-		for(size_t j=0;j<_Cgroup[i]._blocksA.size();j++)
-			os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
-		for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++)
-			os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
+		for(size_t j=0;j<_Cgroup[i]._blocksA.size();j++){
+			if(_Cgroup[i]._color)
+				os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
+			else
+				os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
+		}
+		for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++){
+			if(_Cgroup[i]._color)
+				os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
+			else
+				os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
+		}
 	}	
 }
 

@@ -70,7 +70,7 @@ int main(int argc, char const *argv[])
 	}
 	else {
 		Bbox.printInfo(cout);
-		//Bbox.output(cout);
+		Bbox.output(cout);
 	}
 
 	cout <<"user time: " << timing.uTime / 1000000.0 << "s" << endl; // print period user time in seconds
