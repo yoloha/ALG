@@ -94,7 +94,7 @@ private:
 class Group
 {
 friend class BoundingBox;
-
+friend class WindowsSet;
 public:
 	Group();
 	~Group();

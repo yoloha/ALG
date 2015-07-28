@@ -123,10 +123,10 @@ void WindowsSet::genSim()
 	// if the result improves with a huge step at large gen number
 	//******************************************************************************************************************** 
 	cout<<"groupNum = "<<_groupNum<<endl;
-	int generation_limit = _groupNum*_groupNum*5;
-	int sex_limit = _groupNum*10; // don't let the same couple have sex too many times if their children are rubbish XD
+	int generation_limit = _groupNum*_groupNum;
+	int sex_limit = _groupNum; // don't let the same couple have sex too many times if their children are rubbish XD
 	int sex_time = 0;
-	for(int gen=0;gen<generation_limit;gen++){
+	for(int gen=1;gen<generation_limit;gen++){
 		if( (sex_time <= sex_limit) && (F_record != M_record) ){
 			for(int off=0;off<3;off++,sex_time++){
 				RandomNumGen rngtime(time(0)+gen+off);
@@ -134,7 +134,7 @@ void WindowsSet::genSim()
 				result = simulate(C)/((Window::omega * Window::omega))*100;;
 				if(result < F_record){
 					sex_time = 0;
-					generation_limit += gen*(F_record-result);
+					generation_limit += generation_limit*(F_record-result)/F_record;
 					F_record = result;
 					F = C;
 				}
@@ -155,7 +155,7 @@ void WindowsSet::genSim()
 		result = simulate(S)/((Window::omega * Window::omega))*100;
 		if(result < F_record){
 			sex_time = 0; // new partner, resets available sex time
-			generation_limit += gen*(F_record-result);
+			generation_limit += generation_limit*(F_record-result)/F_record;
 			F_record = result;
 			F = S;
 		}
@@ -173,7 +173,7 @@ void WindowsSet::genSim()
 		result = simulate(T)/((Window::omega * Window::omega))*100;
 		if(result < F_record){
 			sex_time = 0;
-			generation_limit += gen*(F_record-result);
+			generation_limit += generation_limit*(F_record-result)/F_record;
 			F_record = result;
 			F = T;
 		}

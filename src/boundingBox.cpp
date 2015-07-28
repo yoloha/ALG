@@ -338,14 +338,19 @@ BoundingBox::buildWindowsSet()
 	}
 
 	for (int i = 0, l = _crossGroup.size(); i < l; i++) {
-		Window* winLead = _crossGroup[i] -> _windows[0];
-		for (int j = 1, m = _crossGroup[i] -> _windows.size(); j < m; j++) {
+		Window* winLead = _crossGroup[i] -> _windows[0]; // first window in cross group 
+		//cout<<"winlead = "<<*winLead<<endl;
+		for (int j = 1, m = _crossGroup[i] -> _windows.size(); j < m; j++){ // deal with other windows in that cross group
 			Window* win = _crossGroup[i] -> _windows[j];
+			//cout<<"\twin = "<<*win<<endl;
 			if(winLead -> _windowSet != win -> _windowSet) {
-				WindowsSet* windowsSet = win -> _windowSet;
+				WindowsSet* windowsSet = win -> _windowSet; // the windowset of other windows in that cross group
+				for (int k = 0, n = windowsSet -> _crossGroup.size(); k < n; k++){ // combine cross groups 
+					winLead -> _windowSet -> addCrossGroup(windowsSet -> _crossGroup[k]);
+				}
 				for (int k = 0, n = windowsSet -> _windows.size(); k < n; k++) { 
-					winLead -> _windowSet -> addWindow(windowsSet -> _windows[k]);
-					windowsSet -> _windows[k] -> _windowSet = winLead -> _windowSet;
+					winLead -> _windowSet -> addWindow(windowsSet -> _windows[k]); // adds inner group in that window
+					windowsSet -> _windows[k] -> _windowSet = winLead -> _windowSet; // assign same windowset as leading window
 				}
 				windowsSet -> _windows.clear();
 			}
@@ -355,12 +360,8 @@ BoundingBox::buildWindowsSet()
 
 	for (int i = 0, l = sets.size(); i< l; i++) {
 		if (sets[i] -> _windows.empty()) delete sets[i];
-		else {
-			_windowsSet.push_back(sets[i]);
-			//sets[i] -> calWinDensityDiffSum(); 
-		}
+		else	_windowsSet.push_back(sets[i]);
 	}
-
     for (int i = 0, l = _windowsSet.size(); i < l; i++)
         _windowsSet[i] -> initialize();
 }
@@ -386,23 +387,24 @@ void BoundingBox::printInfo(ostream& os)
 	}
 	
 	double density = 0;
-
+	
 	for(int i=0;i<ymax_w;i++){
 		for(int j=0;j<xmax_w;j++){
-			os << "WIN[" << i * xmax_w + j + 1 << "]=" 
+			/*os << "WIN[" << i * xmax_w + j + 1 << "]=" 
 			   << _windows[j][i].windowCoord.x_left << ","
 			   << _windows[j][i].windowCoord.y_down << ","
 			   << _windows[j][i].windowCoord.x_right << ","
 			   << _windows[j][i].windowCoord.y_up << "("
 			   << setprecision(2) << fixed << _windows[j][i].densityA << " "
-			   << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;
+			   << setprecision(2) << fixed << _windows[j][i].densityB << ")" << endl;*/
 			density+=abs(_windows[j][i].densityA - _windows[j][i].densityB);
-			os <<"Inner Group : ";
-			for (int k = 0; k < _windows[j][i].innerGroup.size(); k++)
-				os << *_windows[j][i].innerGroup[k]<<endl;
-			os << endl;
+			/*os <<"Inner Group : ";
+			for (size_t k = 0; k < _windows[j][i].innerGroup.size(); k++)
+				os << *_windows[j][i].innerGroup[k];
+			os << endl;*/
 		}
 	}
+	
 	os<<endl;
 	os<<"TOTAL DENSITY : "<<density<<endl;
 	os<<"---------------------------------------------------------"<<endl;
@@ -431,10 +433,18 @@ void BoundingBox::output(ostream& os)
 	}
 	for(size_t i=0;i<_Cgroup.size();i++){
 		os<<"GROUP"<<endl;
-		for(size_t j=0;j<_Cgroup[i]._blocksA.size();j++)
-			os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
-		for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++)
-			os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
+		for(size_t j=0;j<_Cgroup[i]._blocksA.size();j++){
+			if(_Cgroup[i]._color)
+				os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
+			else
+				os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksA[j]<<endl;
+		}
+		for(size_t j=0;j<_Cgroup[i]._blocksB.size();j++){
+			if(_Cgroup[i]._color)
+				os<<"CB["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
+			else
+				os<<"CA["<<j+1<<"]="<<*_Cgroup[i]._blocksB[j]<<endl;
+		}
 	}	
 }
 
