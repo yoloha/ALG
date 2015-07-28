@@ -402,6 +402,10 @@ void BoundingBox::printInfo(ostream& os)
 			for (size_t k = 0; k < _windows[j][i].innerGroup.size(); k++)
 				os << *_windows[j][i].innerGroup[k];
 			os << endl;*/
+			os <<"Inner Group : ";
+			for (size_t k = 0; k < _windows[j][i].innerGroup.size(); k++)
+				os << *_windows[j][i].innerGroup[k];
+			os << endl;
 		}
 	}
 	
